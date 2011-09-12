@@ -1,0 +1,20 @@
+ROOT_DIR=$(shell pwd)
+OUT_DIR=${ROOT_DIR}/out
+DB_DIR=${OUT_DIR}/db
+RUN_DIR=${OUT_DIR}/run
+SIM_DIR=${ROOT_DIR}/sim
+RTL_DIR=${SIM_DIR}/rtl
+TEST_DIR=${ROOT_DIR}/test
+LOG_DIR=${OUT_DIR}/log
+TOOLS_DIR=${TEST_DIR}/tools
+PSL_DIR=${SIM_DIR}/psl
+SCRIPT_DIR=${ROOT_DIR}/script
+
+VERDI_TAB=/opt/novas/2011.01/share/PLI/vcs_latest/LINUX/verdi.tab
+VERDI_PLI=/opt/novas/2011.01/share/PLI/vcs_latest/LINUX/pli.a
+
+VCS_INC_OPT=+incdir+${RTL_DIR}+${PSL_DIR}
+VCS_OUT_DIR=${OUT_DIR}
+VCS_OPT= +v2k -v2005 -sverilog -Mdir=${DB_DIR} ${VCS_INC_OPT}  -o ${RUN_DIR}/simv 
+VCS=vcs
+
