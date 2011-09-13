@@ -31,7 +31,7 @@ assign inst_out = hint_or_exc ? 32'b0: inst_in;
 //cur_cond[7:0] it first cond and  mask
 
 //IT or Branch check logical
-always @(inst_in[31:24])begin
+always @ */*inst_in[31:24]*/ begin
     casex(inst_in[31:24])
         8'b1101????:begin
             cur_cond    <=  inst_in[27:24];

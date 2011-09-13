@@ -1,0 +1,33 @@
+
+vunit pre_dec_psl (pre_dec)
+{
+
+ IT_EQ_HINT_ASSERTION: assert never { ~apsr[3]  && cur_cond == 4'b0000 && it_status[3:0] != 4'b0000 && ~hint_or_exc } @ (posedge clk);
+ IT_NE_HINT_ASSERTION: assert never {  apsr[3]  && cur_cond == 4'b0001 && it_status[3:0] != 4'b0000 && ~hint_or_exc } @ (posedge clk);
+ IT_CS_HINT_ASSERTION: assert never { ~apsr[2]  && cur_cond == 4'b0010 && it_status[3:0] != 4'b0000 && ~hint_or_exc } @ (posedge clk);
+ IT_CC_HINT_ASSERTION: assert never {  apsr[2]  && cur_cond == 4'b0011 && it_status[3:0] != 4'b0000 && ~hint_or_exc } @ (posedge clk);
+ IT_MI_HINT_ASSERTION: assert never { ~apsr[4]  && cur_cond == 4'b0100 && it_status[3:0] != 4'b0000 && ~hint_or_exc } @ (posedge clk);
+ IT_PL_HINT_ASSERTION: assert never {  apsr[4]  && cur_cond == 4'b0101 && it_status[3:0] != 4'b0000 && ~hint_or_exc } @ (posedge clk);
+ IT_VS_HINT_ASSERTION: assert never { ~apsr[1]  && cur_cond == 4'b0110 && it_status[3:0] != 4'b0000 && ~hint_or_exc } @ (posedge clk);
+ IT_VC_HINT_ASSERTION: assert never {  apsr[1]  && cur_cond == 4'b0111 && it_status[3:0] != 4'b0000 && ~hint_or_exc } @ (posedge clk);
+ IT_HI_HINT_ASSERTION: assert never { ~(~apsr[3] & apsr[2])  && cur_cond == 4'b1000 && it_status[3:0] != 4'b0000 && ~hint_or_exc } @ (posedge clk);
+ IT_LS_HINT_ASSERTION: assert never {  (~apsr[3] & apsr[2]) && cur_cond == 4'b1001 && it_status[3:0] != 4'b0000 && ~hint_or_exc } @ (posedge clk);
+ IT_GE_HINT_ASSERTION: assert never { ~(apsr[4] == apsr[1]) && cur_cond == 4'b1010 && it_status[3:0] != 4'b0000 && ~hint_or_exc } @ (posedge clk);
+ IT_LT_HINT_ASSERTION: assert never {  (apsr[4] == apsr[1]) && cur_cond == 4'b1011 && it_status[3:0] != 4'b0000 && ~hint_or_exc } @ (posedge clk);
+
+ IT_AL_EXC_ASSERTION: assert never { hint_or_exc && cur_cond[3:1] == 3'b111 } @ (posedge clk);
+
+ IT_EQ_EXC_ASSERTION: assert never { ( apsr[3]  && cur_cond == 4'b0000 || it_status[3:0] == 4'b0000) && cur_inst[31:24] != 8'hbf && inst_valid && hint_or_exc } @ (posedge clk);
+ IT_NE_EXC_ASSERTION: assert never { (~apsr[3]  && cur_cond == 4'b0001 || it_status[3:0] == 4'b0000) && cur_inst[31:24] != 8'hbf && inst_valid && hint_or_exc } @ (posedge clk);
+ IT_CS_EXC_ASSERTION: assert never { ( apsr[2]  && cur_cond == 4'b0010 || it_status[3:0] == 4'b0000) && cur_inst[31:24] != 8'hbf && inst_valid && hint_or_exc } @ (posedge clk);
+ IT_CC_EXC_ASSERTION: assert never { (~apsr[2]  && cur_cond == 4'b0011 || it_status[3:0] == 4'b0000) && cur_inst[31:24] != 8'hbf && inst_valid && hint_or_exc } @ (posedge clk);
+ IT_MI_EXC_ASSERTION: assert never { ( apsr[4]  && cur_cond == 4'b0100 || it_status[3:0] == 4'b0000) && cur_inst[31:24] != 8'hbf && inst_valid && hint_or_exc } @ (posedge clk);
+ IT_PL_EXC_ASSERTION: assert never { (~apsr[4]  && cur_cond == 4'b0101 || it_status[3:0] == 4'b0000) && cur_inst[31:24] != 8'hbf && inst_valid && hint_or_exc } @ (posedge clk);
+ IT_VS_EXC_ASSERTION: assert never { ( apsr[1]  && cur_cond == 4'b0110 || it_status[3:0] == 4'b0000) && cur_inst[31:24] != 8'hbf && inst_valid && hint_or_exc } @ (posedge clk);
+ IT_VC_EXC_ASSERTION: assert never { (~apsr[1]  && cur_cond == 4'b0111 || it_status[3:0] == 4'b0000) && cur_inst[31:24] != 8'hbf && inst_valid && hint_or_exc } @ (posedge clk);
+ IT_HI_EXC_ASSERTION: assert never { ( (~apsr[3] & apsr[2]) && cur_cond == 4'b1000 || it_status[3:0] == 4'b0000) && cur_inst[31:24] != 8'hbf && inst_valid && hint_or_exc } @ (posedge clk);
+ IT_LS_EXC_ASSERTION: assert never { (~(~apsr[3] & apsr[2]) && cur_cond == 4'b1001 || it_status[3:0] == 4'b0000) && cur_inst[31:24] != 8'hbf && inst_valid && hint_or_exc } @ (posedge clk);
+ IT_GE_EXC_ASSERTION: assert never { ( (apsr[4] == apsr[1]) && cur_cond == 4'b1010 || it_status[3:0] == 4'b0000) && cur_inst[31:24] != 8'hbf && inst_valid && hint_or_exc } @ (posedge clk);
+ IT_LT_EXC_ASSERTION: assert never { (~(apsr[4] == apsr[1]) && cur_cond == 4'b1011 || it_status[3:0] == 4'b0000) && cur_inst[31:24] != 8'hbf && inst_valid && hint_or_exc } @ (posedge clk);
+}
+

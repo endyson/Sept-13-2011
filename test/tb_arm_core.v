@@ -8,7 +8,6 @@
 
 `include "arm_core.v"
 `include "xpsr_reg.v"
-//`include "mem.v"
 
 module tb_arm_core;
 
@@ -26,25 +25,25 @@ wire [7:0]it_status;
 reg[4:0] en_apsr_reg;
 reg en_ipsr_reg;
 
-wire[4:0] apsr;
-
 wire hint_or_exc = u_arm_core.u_pre_dec.hint_or_exc;
 wire[3:0] cur_cond = u_arm_core.u_pre_dec.cur_cond;
 //Module instancise
 arm_core    u_arm_core(inst_hw,rst,clk,inst);
-//mem         u_mem(pc,inst_hw);
 
 //Emulate the instruction memory
 assign inst_hw = inst_mem[pc];
-//A probe used to inspect IT status
-assign it_status = {u_arm_core.u_xpsr_reg.epsr[6:1],u_arm_core.u_xpsr_reg.epsr[9:8]};
 
+//Add inject probe
 //used to set the APSR & IPSR registers to proper status
 assign u_arm_core.u_xpsr_reg.en_apsr = en_apsr_reg;
 assign u_arm_core.u_xpsr_reg.en_ipsr = en_ipsr_reg;
+
+//Add drawout probe 
+assign it_status = {u_arm_core.u_xpsr_reg.epsr[6:1],u_arm_core.u_xpsr_reg.epsr[9:8]};
 wire[31:0] cur_inst= u_arm_core.u_if.valid_inst;
 wire inst_valid = u_arm_core.inst_valid;
-assign apsr = u_arm_core.u_xpsr_reg.apsr;
+wire [4:0] apsr = u_arm_core.u_xpsr_reg.apsr;
+wire in_it_blk = u_arm_core.u_xpsr_reg.in_it_blk;
 //input Signals initialization 
 initial begin
     clk     = 0;
@@ -113,35 +112,37 @@ always @ (posedge clk)begin
     if(pc == ADDR_END )begin
         $finish;
     end
-    #1  $fdisplay(fl,"next_inst_hw = [%h]\tcur_inst = [%h]\thint_or_exc = [%b]\tvalid_inst = [%h]\tcur_cond = [%b]\tpc = [%d]",
-                      inst_hw,   u_arm_core.u_if.valid_inst, u_arm_core.u_pre_dec.hint_or_exc,inst, it_status[7:0], pc);
+    #1  $fdisplay(fl,"next_inst_hw = [%h]\tcur_inst = [%h]\thint_or_exc = [%b]\tinst_valid = %b\tvalid_inst = [%h]\tcur_cond = [%b]\tpc = [%d]\t@ %d",
+                      inst_hw,   u_arm_core.u_if.valid_inst, u_arm_core.u_pre_dec.hint_or_exc, inst_valid, inst, it_status[7:4], pc, $time);
 end
-//psl IT_EQ_HINT_ASSERTION: assert never { ~apsr[3]  && cur_cond == 4'b0000 && it_status[3:0] != 4'b0000 && ~hint_or_exc } @ (posedge clk);
-//psl IT_NE_HINT_ASSERTION: assert never {  apsr[3]  && cur_cond == 4'b0001 && it_status[3:0] != 4'b0000 && ~hint_or_exc } @ (posedge clk);
-//psl IT_CS_HINT_ASSERTION: assert never { ~apsr[2]  && cur_cond == 4'b0010 && it_status[3:0] != 4'b0000 && ~hint_or_exc } @ (posedge clk);
-//psl IT_CC_HINT_ASSERTION: assert never {  apsr[2]  && cur_cond == 4'b0011 && it_status[3:0] != 4'b0000 && ~hint_or_exc } @ (posedge clk);
-//psl IT_MI_HINT_ASSERTION: assert never { ~apsr[4]  && cur_cond == 4'b0100 && it_status[3:0] != 4'b0000 && ~hint_or_exc } @ (posedge clk);
-//psl IT_PL_HINT_ASSERTION: assert never {  apsr[4]  && cur_cond == 4'b0101 && it_status[3:0] != 4'b0000 && ~hint_or_exc } @ (posedge clk);
-//psl IT_VS_HINT_ASSERTION: assert never { ~apsr[1]  && cur_cond == 4'b0110 && it_status[3:0] != 4'b0000 && ~hint_or_exc } @ (posedge clk);
-//psl IT_VC_HINT_ASSERTION: assert never {  apsr[1]  && cur_cond == 4'b0111 && it_status[3:0] != 4'b0000 && ~hint_or_exc } @ (posedge clk);
-//psl IT_HI_HINT_ASSERTION: assert never { ~(~apsr[3] & apsr[2])  && cur_cond == 4'b1000 && it_status[3:0] != 4'b0000 && ~hint_or_exc } @ (posedge clk);
-//psl IT_LS_HINT_ASSERTION: assert never {  (~apsr[3] & apsr[2]) && cur_cond == 4'b1001 && it_status[3:0] != 4'b0000 && ~hint_or_exc } @ (posedge clk);
-//psl IT_GE_HINT_ASSERTION: assert never { ~(apsr[4] == apsr[1]) && cur_cond == 4'b1010 && it_status[3:0] != 4'b0000 && ~hint_or_exc } @ (posedge clk);
-//psl IT_LT_HINT_ASSERTION: assert never {  (apsr[4] == apsr[1]) && cur_cond == 4'b1011 && it_status[3:0] != 4'b0000 && ~hint_or_exc } @ (posedge clk);
+ /*H I N T      O p e r a t i o n       A s s e r t i o n*/
+ //psl IT_EQ_HINT_ASSERTION: assert never { ~apsr[3]  && cur_cond == 4'b0000 && in_it_blk && ~hint_or_exc } @ (posedge clk);
+ //psl IT_NE_HINT_ASSERTION: assert never {  apsr[3]  && cur_cond == 4'b0001 && in_it_blk && ~hint_or_exc } @ (posedge clk);
+ //psl IT_CS_HINT_ASSERTION: assert never { ~apsr[2]  && cur_cond == 4'b0010 && in_it_blk && ~hint_or_exc } @ (posedge clk);
+ //psl IT_CC_HINT_ASSERTION: assert never {  apsr[2]  && cur_cond == 4'b0011 && in_it_blk && ~hint_or_exc } @ (posedge clk);
+ //psl IT_MI_HINT_ASSERTION: assert never { ~apsr[4]  && cur_cond == 4'b0100 && in_it_blk && ~hint_or_exc } @ (posedge clk);
+ //psl IT_PL_HINT_ASSERTION: assert never {  apsr[4]  && cur_cond == 4'b0101 && in_it_blk && ~hint_or_exc } @ (posedge clk);
+ //psl IT_VS_HINT_ASSERTION: assert never { ~apsr[1]  && cur_cond == 4'b0110 && in_it_blk && ~hint_or_exc } @ (posedge clk);
+ //psl IT_VC_HINT_ASSERTION: assert never {  apsr[1]  && cur_cond == 4'b0111 && in_it_blk && ~hint_or_exc } @ (posedge clk);
+ //psl IT_HI_HINT_ASSERTION: assert never { ~(~apsr[3] & apsr[2])  && cur_cond == 4'b1000 && in_it_blk && ~hint_or_exc } @ (posedge clk);
+ //psl IT_LS_HINT_ASSERTION: assert never {  (~apsr[3] & apsr[2]) && cur_cond == 4'b1001 && in_it_blk && ~hint_or_exc } @ (posedge clk);
+ //psl IT_GE_HINT_ASSERTION: assert never { ~(apsr[4] == apsr[1]) && cur_cond == 4'b1010 && in_it_blk && ~hint_or_exc } @ (posedge clk);
+ //psl IT_LT_HINT_ASSERTION: assert never {  (apsr[4] == apsr[1]) && cur_cond == 4'b1011 && in_it_blk && ~hint_or_exc } @ (posedge clk);
 
-//psl IT_AL_EXC_ASSERTION: assert never { hint_or_exc && cur_cond[3:1] == 3'b111 } @ (posedge clk);
+ //psl IT_AL_EXC_ASSERTION: assert never { hint_or_exc && cur_cond[3:1] == 3'b111 } @ (posedge clk);
 
-//psl IT_EQ_EXC_ASSERTION: assert never { ( apsr[3]  && cur_cond == 4'b0000 || it_status[3:0] == 4'b0000) && cur_inst[31:24] != 8'hbf && inst_valid && hint_or_exc } @ (posedge clk);
-//psl IT_NE_EXC_ASSERTION: assert never { (~apsr[3]  && cur_cond == 4'b0001 || it_status[3:0] == 4'b0000) && cur_inst[31:24] != 8'hbf && inst_valid && hint_or_exc } @ (posedge clk);
-//psl IT_CS_EXC_ASSERTION: assert never { ( apsr[2]  && cur_cond == 4'b0010 || it_status[3:0] == 4'b0000) && cur_inst[31:24] != 8'hbf && inst_valid && hint_or_exc } @ (posedge clk);
-//psl IT_CC_EXC_ASSERTION: assert never { (~apsr[2]  && cur_cond == 4'b0011 || it_status[3:0] == 4'b0000) && cur_inst[31:24] != 8'hbf && inst_valid && hint_or_exc } @ (posedge clk);
-//psl IT_MI_EXC_ASSERTION: assert never { ( apsr[4]  && cur_cond == 4'b0100 || it_status[3:0] == 4'b0000) && cur_inst[31:24] != 8'hbf && inst_valid && hint_or_exc } @ (posedge clk);
-//psl IT_PL_EXC_ASSERTION: assert never { (~apsr[4]  && cur_cond == 4'b0101 || it_status[3:0] == 4'b0000) && cur_inst[31:24] != 8'hbf && inst_valid && hint_or_exc } @ (posedge clk);
-//psl IT_VS_EXC_ASSERTION: assert never { ( apsr[1]  && cur_cond == 4'b0110 || it_status[3:0] == 4'b0000) && cur_inst[31:24] != 8'hbf && inst_valid && hint_or_exc } @ (posedge clk);
-//psl IT_VC_EXC_ASSERTION: assert never { (~apsr[1]  && cur_cond == 4'b0111 || it_status[3:0] == 4'b0000) && cur_inst[31:24] != 8'hbf && inst_valid && hint_or_exc } @ (posedge clk);
-//psl IT_HI_EXC_ASSERTION: assert never { ( (~apsr[3] & apsr[2]) && cur_cond == 4'b1000 || it_status[3:0] == 4'b0000) && cur_inst[31:24] != 8'hbf && inst_valid && hint_or_exc } @ (posedge clk);
-//psl IT_LS_EXC_ASSERTION: assert never { (~(~apsr[3] & apsr[2]) && cur_cond == 4'b1001 || it_status[3:0] == 4'b0000) && cur_inst[31:24] != 8'hbf && inst_valid && hint_or_exc } @ (posedge clk);
-//psl IT_GE_EXC_ASSERTION: assert never { ( (apsr[4] == apsr[1]) && cur_cond == 4'b1010 || it_status[3:0] == 4'b0000) && cur_inst[31:24] != 8'hbf && inst_valid && hint_or_exc } @ (posedge clk);
-//psl IT_LT_EXC_ASSERTION: assert never { (~(apsr[4] == apsr[1]) && cur_cond == 4'b1011 || it_status[3:0] == 4'b0000) && cur_inst[31:24] != 8'hbf && inst_valid && hint_or_exc } @ (posedge clk);
+ /*E X C     O p e r a t i o n       A s s e r t i o n*/
+ //psl IT_EQ_EXC_ASSERTION: assert never { ( apsr[3]  && cur_cond == 4'b0000 || ~in_it_blk) && cur_inst[31:24] != 8'hbf && inst_valid && hint_or_exc } @ (posedge clk);
+ //psl IT_NE_EXC_ASSERTION: assert never { (~apsr[3]  && cur_cond == 4'b0001 || ~in_it_blk) && cur_inst[31:24] != 8'hbf && inst_valid && hint_or_exc } @ (posedge clk);
+ //psl IT_CS_EXC_ASSERTION: assert never { ( apsr[2]  && cur_cond == 4'b0010 || ~in_it_blk) && cur_inst[31:24] != 8'hbf && inst_valid && hint_or_exc } @ (posedge clk);
+ //psl IT_CC_EXC_ASSERTION: assert never { (~apsr[2]  && cur_cond == 4'b0011 || ~in_it_blk) && cur_inst[31:24] != 8'hbf && inst_valid && hint_or_exc } @ (posedge clk);
+ //psl IT_MI_EXC_ASSERTION: assert never { ( apsr[4]  && cur_cond == 4'b0100 || ~in_it_blk) && cur_inst[31:24] != 8'hbf && inst_valid && hint_or_exc } @ (posedge clk);
+ //psl IT_PL_EXC_ASSERTION: assert never { (~apsr[4]  && cur_cond == 4'b0101 || ~in_it_blk) && cur_inst[31:24] != 8'hbf && inst_valid && hint_or_exc } @ (posedge clk);
+ //psl IT_VS_EXC_ASSERTION: assert never { ( apsr[1]  && cur_cond == 4'b0110 || ~in_it_blk) && cur_inst[31:24] != 8'hbf && inst_valid && hint_or_exc } @ (posedge clk);
+ //psl IT_VC_EXC_ASSERTION: assert never { (~apsr[1]  && cur_cond == 4'b0111 || ~in_it_blk) && cur_inst[31:24] != 8'hbf && inst_valid && hint_or_exc } @ (posedge clk);
+ //psl IT_HI_EXC_ASSERTION: assert never { ( (~apsr[3] & apsr[2]) && cur_cond == 4'b1000 || ~in_it_blk) && cur_inst[31:24] != 8'hbf && inst_valid && hint_or_exc } @ (posedge clk);
+ //psl IT_LS_EXC_ASSERTION: assert never { (~(~apsr[3] & apsr[2]) && cur_cond == 4'b1001 || ~in_it_blk) && cur_inst[31:24] != 8'hbf && inst_valid && hint_or_exc } @ (posedge clk);
+ //psl IT_GE_EXC_ASSERTION: assert never { ( (apsr[4] == apsr[1]) && cur_cond == 4'b1010 || ~in_it_blk) && cur_inst[31:24] != 8'hbf && inst_valid && hint_or_exc } @ (posedge clk);
+ //psl IT_LT_EXC_ASSERTION: assert never { (~(apsr[4] == apsr[1]) && cur_cond == 4'b1011 || ~in_it_blk) && cur_inst[31:24] != 8'hbf && inst_valid && hint_or_exc } @ (posedge clk);
 
 endmodule

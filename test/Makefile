@@ -11,7 +11,7 @@ it_gen:
 
 run:
 	@echo "Running the Simulation"
-	@cd ${LOG_DIR} && ${RUN_DIR}/simv -debug tbug
+	@cd ${LOG_DIR} && ${RUN_DIR}/simv
 
 tb_inst_fetch:if_gen 
 	@echo "Entering into ${LOG_DIR}"
@@ -23,4 +23,4 @@ tb_cond_pass:
 
 tb_arm_core:it_gen
 	@echo "Building tb_arm_core test"
-	@cd ${LOG_DIR} && ${VCS} ${VCS_OPT} -P ${VERDI_TAB} ${VERDI_PLI} -psl ${TEST_DIR}/tb_arm_core.v  ${PSL_DIR}/xpsr_reg.psl
+	@cd ${LOG_DIR} && ${VCS} ${VCS_OPT} -P ${VERDI_TAB} ${VERDI_PLI} ${TEST_DIR}/tb_arm_core.v  ${PSL_DIR}/xpsr_reg.psl
