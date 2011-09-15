@@ -1,9 +1,17 @@
-/*
-* Author:	Xiao, Chang
-* Date:		8/3/2011
-* Version:	0.0
-* File:		tb_arm_core.v
-*/
+/* File:            tb_arm_core.v
+ * Author:          Xiao,Chang
+ * Email:           chngxiao@gmail.com
+ * Original Date:   9/14/2011 
+ * Last Modified:   9/14/2011
+ * Description:     Test bench for the top level arm_core module.
+ * Copyright:       All right reserved by Xiao,Chang.
+ *
+ * Notice: Please do me a favor to NOT remove the content above. 
+ *         If you have any modification and description on this, please add it anywhere you like!.
+ *         This is all I need when I do this.
+ *         Thank you very much for concernning and Welcome to join into my work!
+ *         Please Feel free to email me by the email address above.
+ */
 `timescale 1ns/10ps
 
 `include "arm_core.v"
@@ -112,8 +120,8 @@ always @ (posedge clk)begin
     if(pc == ADDR_END )begin
         $finish;
     end
-    #1  $fdisplay(fl,"next_inst_hw = [%h]\tcur_inst = [%h]\thint_or_exc = [%b]\tinst_valid = %b\tvalid_inst = [%h]\tcur_cond = [%b]\tpc = [%d]\t@ %d",
-                      inst_hw,   u_arm_core.u_if.valid_inst, u_arm_core.u_pre_dec.hint_or_exc, inst_valid, inst, it_status[7:4], pc, $time);
+    #1  $fdisplay(fl,"next_inst_hw = [%h]\tcur_inst = [%h]\thint_or_exc = [%b]\tinst_valid = %b\tvalid_inst = [%h]\tcur_cond = [%b]\tmask = [%b]\tpc = [%d]\t@ %d",
+                      inst_hw,   u_arm_core.u_if.valid_inst, u_arm_core.u_pre_dec.hint_or_exc, inst_valid, inst, it_status[7:4],it_status[3:0], pc, $time);
 end
  /*H I N T      O p e r a t i o n       A s s e r t i o n*/
  //psl IT_EQ_HINT_ASSERTION: assert never { ~apsr[3]  && cur_cond == 4'b0000 && in_it_blk && ~hint_or_exc } @ (posedge clk);

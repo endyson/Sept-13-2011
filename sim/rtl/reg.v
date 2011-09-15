@@ -1,3 +1,17 @@
+/* File:            reg.v
+ * Author:          Xiao,Chang
+ * Email:           chngxiao@gmail.com
+ * Original Date:   9/14/2011 
+ * Last Modified:   9/14/2011
+ * Description:     For registers and D-FFs modules reuse purpose.
+ * Copyright:       All right reserved by Xiao,Chang.
+ *
+ * Notice: Please do me a favor to NOT remove the content above. 
+ *         If you have any modification and description on this, please add it anywhere you like!.
+ *         This is all I need when I do this.
+ *         Thank you very much for concernning and Welcome to join into my work!
+ *         Please Feel free to email me by the email address above.
+ */
 `ifndef REG_V
 `define REG_V
 module dff_en(
