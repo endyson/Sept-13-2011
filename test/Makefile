@@ -13,6 +13,10 @@ run:
 	@echo "Running the Simulation"
 	@cd ${LOG_DIR} && ${RUN_DIR}/simv
 
+it_verify:tb_arm_core
+	@echo "Verifying the Output signal's Correctness!\n"
+	@${TOOLS_DIR}/tab_chk.pl  ${LOG_DIR}/arm_core.log
+
 tb_inst_fetch:if_gen 
 	@echo "Entering into ${LOG_DIR}"
 	@cd ${LOG_DIR} && ${VCS} ${VCS_OPT} -P ${VERDI_TAB} ${VERDI_PLI} ${TEST_DIR}/tb_inst_fetch.v && \
