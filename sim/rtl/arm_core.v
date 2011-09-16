@@ -23,7 +23,6 @@ input rst,
 input clk,
 
 //temperary output
-output [31:0]inst
 );
 //////////////////////////////////
 //Signals within Stage One
@@ -48,6 +47,7 @@ wire [31:0]set_xpsr;
 wire [7:0] it_status;
 wire [3:0] cond;
 wire in_it_blk;
+wire [31:0]inst;
 
 assign cond = epsr[6:3];
 assign {set_xpsr[15:12],set_xpsr[11:10],set_xpsr[26:25]} = it_status;
