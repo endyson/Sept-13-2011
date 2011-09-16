@@ -62,7 +62,13 @@ pre_dec     u_pre_dec(inst_w, cond,apsr,in_it_blk, inst, en_epsr,it_status);
 //[31:0]inst;
 //clk;
 //rst;
+//cur_carry;
 //
+//Stage Output Signals:
+//[31:0] oprand1;
+//[31:0] oprand2;
+//[X:0]  opcode;//TODO
+//next_carry;
 //
 //////////////////////////////////
 
