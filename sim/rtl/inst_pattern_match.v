@@ -13,15 +13,23 @@
  *         Thank you very much for concernning and Welcome to join into my work!
  *         Please Feel free to email me by the email address above.
  */
+`include "thumb_expand_imm.v"
 module inst_pattern_match(
     input [31:0] inst,
     input clk,
+    input carry_in,
 
     output [3:0] rd,
     output [3:0] rn,
     output [3:0] rm,
+
     output imm_or_reg,
-    output [31:0]imm32
+    output shift_or_not,
+
+    output [31:0]imm32,
+    
+    output [1:0]s_type,
+    output [4:0] offset
 );
 
 always @ (posedge clk)begin
@@ -33,8 +41,9 @@ always @ (posedge clk)begin
         begin
             rd = inst[11:8];
             rm = inst[19:16];
-            imm32 = thumb_expand_imm({inst[26],inst[14:12],inst[7:0]});
+            thumb_expand_imm({inst[26],inst[14:12],inst[7:0]}, carry_in, imm32, carry_out);
             imm_or_reg = 1'b1;
+
         end
         //pattern 2:
         17'b11110?100000????0://ADD(imm) T4
@@ -42,7 +51,7 @@ always @ (posedge clk)begin
         17'b11110?10101011110://ADR T2
         17'b11110?10000011110://ADR T3
         begin
-             rd = inst[11:8];
+            rd = inst[11:8];
             rm = inst[19:16];
             imm32 = {20'b0,inst[26],inst[14:12],inst[7:0]};
             imm_or_reg = 1'b1;
@@ -53,11 +62,13 @@ always @ (posedge clk)begin
         17'b11101011000?11010://ADD(SP plus reg) T3
         begin
             rd = inst[11:8];
-            rn = inst[19:16];
-            rm = inst[3:0];
-            imm5 = {inst[14:12],inst[7:6]};
+            rm = inst[19:16];
+            rn = inst[3:0];
+            offset = {inst[14:12],inst[7:6]};
             imm_or_reg = 1'b0;
-            //shift
+            s_type = inst[5:4];
+            shift_or_not = 1'b1;
+            //shift(inst[5:4],{inst[14:12],inst[7:6]},, carry_in,
         end
         //pattern 4:
         17'b0100000101???????://ADC(reg) T1
@@ -66,6 +77,8 @@ always @ (posedge clk)begin
             rn = {1'b0,inst[18:16]};
             rm = {1'b0,inst[21:19]};
             imm_or_reg = 1'b0;
+            //Do not shift
+            shift_or_not = 1'b0;
         end
         //pattern 5:
         17'b0001110??????????://ADD(imm) T1
@@ -100,6 +113,8 @@ always @ (posedge clk)begin
             rn = {1'b0,inst[21:19]};
             rm = {1'b0,inst[24:22]};
             imm_or_reg = 1'b0;
+            //Do not shift
+            shift_or_not = 1'b0;
         end
         //pattern 9:
         17'b01000100?????????://ADD(reg) T2
@@ -109,6 +124,8 @@ always @ (posedge clk)begin
             rn = inst[22:19];
             rm = {inst[23],inst[18:16]};
             imm_or_reg = 1'b0;
+            //Do not shift
+            shift_or_not = 1'b0;
         end
     endcase
 end
