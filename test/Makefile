@@ -7,7 +7,7 @@ if_gen:
 	@cd ${LOG_DIR} && perl ${TOOLS_DIR}/inst_gen.pl >inst.dat
 it_gen:
 	@echo "Generating test instructions for IT operation"
-	@cd ${LOG_DIR} && perl ${TOOLS_DIR}/inst_it_gen.pl >inst_it.dat
+	@cd ${LOG_DIR} && perl ${TOOLS_DIR}/inst_it_gen.pl >inst.dat
 
 run:
 	@echo "Running the Simulation"
@@ -15,7 +15,7 @@ run:
 
 it_verify:tb_arm_core
 	@echo "Verifying the Output signal's Correctness!\n"
-	@${TOOLS_DIR}/tab_chk.pl  ${LOG_DIR}/arm_core.log
+	@${TOOLS_DIR}/stage_1_output_chk.pl  ${LOG_DIR}/stage_1_output.log
 
 tb_inst_fetch:if_gen 
 	@echo "Entering into ${LOG_DIR}"

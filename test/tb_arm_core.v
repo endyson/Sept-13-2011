@@ -19,7 +19,7 @@
  module tb_arm_core;
 
  parameter ADDR_END=9*256 + 3*16 + 4*16 + 9*256;
- integer fl;
+ integer fd_stage_one;
 
  //Interconnection declarition
  wire [15:0]inst_hw;
@@ -85,10 +85,10 @@ initial begin
     $readmemh("./inst.dat",inst_mem);
     
     //Logging TARGET signals 
-    fl  =   $fopen("./arm_core.log","w");
+    fd_stage_one  =   $fopen("./stage_1_output.log","w");
     
     //Dump waveform
-    $fsdbDumpfile("./inst_it_wv.fsdb");
+    $fsdbDumpfile("./wavevform.fsdb");
     $fsdbDumpvars();
 end
 
@@ -96,19 +96,19 @@ end
 //Log head
 always @ (posedge clk )begin
     if ( cur_inst[31:24] == 8'hbf)begin
-        $fdisplay(fl,"*******************************************************************************************************");
-        $fdisplay(fl,"IT Status = [%b]\tAPSR = [%b]",cur_inst[23:16], apsr);
+        $fdisplay(fd_stage_one,"*******************************************************************************************************");
+        $fdisplay(fd_stage_one,"IT Status = [%b]\tAPSR = [%b]",cur_inst[23:16], apsr);
         case(it_status[7:5])
-            3'b000:$fdisplay(fl,"Condition is EQ or NE:\tEQ[x1xxx]\tNE[x0xxx]");
-            3'b001:$fdisplay(fl,"Condition is CS or CC:\tCS[xx1xx]\tCC[xx0xx]");
-            3'b010:$fdisplay(fl,"Condition is MI or PL:\tMI[1xxxx]\tPL[0xxxx]");
-            3'b011:$fdisplay(fl,"Condition is VS or VC:\tVS[xxx1x]\tVC[xxx0x]");
-            3'b100:$fdisplay(fl,"Condition is HI or LS:\tHI[x01xx]\tLS[x??xx]");
-            3'b101:$fdisplay(fl,"Condition is GE or LT:\tGE[SxxSx]\tLT[Sxxsx]");
-            3'b110:$fdisplay(fl,"Condition is GT or LE:\tGT[S0xSx]\tLE[??x?x]");
-            3'b111:$fdisplay(fl,"Condition is AL: Always Execute!");
+            3'b000:$fdisplay(fd_stage_one,"Condition is EQ or NE:\tEQ[x1xxx]\tNE[x0xxx]");
+            3'b001:$fdisplay(fd_stage_one,"Condition is CS or CC:\tCS[xx1xx]\tCC[xx0xx]");
+            3'b010:$fdisplay(fd_stage_one,"Condition is MI or PL:\tMI[1xxxx]\tPL[0xxxx]");
+            3'b011:$fdisplay(fd_stage_one,"Condition is VS or VC:\tVS[xxx1x]\tVC[xxx0x]");
+            3'b100:$fdisplay(fd_stage_one,"Condition is HI or LS:\tHI[x01xx]\tLS[x??xx]");
+            3'b101:$fdisplay(fd_stage_one,"Condition is GE or LT:\tGE[SxxSx]\tLT[Sxxsx]");
+            3'b110:$fdisplay(fd_stage_one,"Condition is GT or LE:\tGT[S0xSx]\tLE[??x?x]");
+            3'b111:$fdisplay(fd_stage_one,"Condition is AL: Always Execute!");
         endcase
-        $fdisplay(fl,"-------------------------------------------------------------------------------------------------------");
+        $fdisplay(fd_stage_one,"-------------------------------------------------------------------------------------------------------");
     end
 end
 
@@ -121,9 +121,11 @@ always @ (posedge clk)begin
     if(pc == ADDR_END )begin
         $finish;
     end
-    #1  $fdisplay(fl,"next_inst_hw = [%h]\tcur_inst = [%h]\thint_or_exc = [%b]\tinst_valid = %b\tvalid_inst = [%h]\tcur_cond = [%b]\tmask = [%b]\tpc = [%d]\t@ %d",
+    #1  $fdisplay(fd_stage_one,"next_inst_hw = [%h]\tcur_inst = [%h]\thint_or_exc = [%b]\tinst_valid = %b\tvalid_inst = [%h]\tcur_cond = [%b]\tmask = [%b]\tpc = [%d]\t@ %d",
         inst_hw,   cur_inst, hint_or_exc, inst_valid, inst, it_status[7:4],it_status[3:0], pc, $time);
 end
+
+/************************************S t a g e      O n e       A s s e r t i o n*****************************************/
 
 /*H I N T      O p e r a t i o n       A s s e r t i o n*/
 //psl IT_EQ_HINT_ASSERTION: assert never { ~apsr[3]  && cur_cond == 4'b0000 && in_it_blk && ~hint_or_exc } @ (posedge clk);
@@ -154,5 +156,8 @@ end
 //psl IT_LS_EXC_ASSERTION: assert never { (~(~apsr[3] & apsr[2]) && cur_cond == 4'b1001 || ~in_it_blk) && cur_inst[31:24] != 8'hbf && inst_valid && hint_or_exc } @ (posedge clk);
 //psl IT_GE_EXC_ASSERTION: assert never { ( (apsr[4] == apsr[1]) && cur_cond == 4'b1010 || ~in_it_blk) && cur_inst[31:24] != 8'hbf && inst_valid && hint_or_exc } @ (posedge clk);
 //psl IT_LT_EXC_ASSERTION: assert never { (~(apsr[4] == apsr[1]) && cur_cond == 4'b1011 || ~in_it_blk) && cur_inst[31:24] != 8'hbf && inst_valid && hint_or_exc } @ (posedge clk);
+
+
+
 
 endmodule
