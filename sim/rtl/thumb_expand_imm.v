@@ -19,7 +19,7 @@
 module thumb_expand_imm(
 input [11:0]imm12,
 input carry_in,
-output reg [31:0]imm32;
+output reg [31:0]imm32,
 output reg carry_out
 );
 always @ * begin
@@ -36,5 +36,6 @@ always @ * begin
         shift(2'b11, imm12[11:7],{24'b0,1'b1,imm12[6:0]}, carry_in, imm32, carry_out); 
     end
 
+end
 endmodule
 `endif

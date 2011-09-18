@@ -35,7 +35,7 @@
  reg [4:0]apsr_reg;
 
  //Module instancise
- arm_core    u_arm_core(inst_hw,rst,clk,inst);
+ arm_core    u_arm_core(inst_hw,rst,clk);
 
 
  //Instruction memory

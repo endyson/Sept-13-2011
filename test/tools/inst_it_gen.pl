@@ -112,8 +112,10 @@ my    $len=1;
 
 my $addr=0;
 foreach (@inst){
-    print "@";
-    flprint($addr,BASE, ADDR_LEN," ");
+    print "@",$addr," ";
     $addr++;
-    flprint($_,BASE,INST_LEN,"\n");
+    printf("%x\n",$_);
+
+#    flprint($addr,BASE, ADDR_LEN," ");
+#    flprint($_,BASE,INST_LEN,"\n");
 }

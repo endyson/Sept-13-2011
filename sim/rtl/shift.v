@@ -17,33 +17,40 @@ module shift(
     input [1:0]s_type,
     input [4:0]offset,
     input [31:0]op_m,
-    input carry_in
+    input carry_in,
 
     output reg [31:0]result,
-    output reg carry,
+    output reg carry
 );
+
+//reg carry_container;
 
 always @ ( s_type or offset)begin
     case(s_type)
         //SRTYPE_LSL
         2'b00:begin
-            result  = offset == 5'b0 ? 32'b0 : {op_m[31-offset:0],offset{1'b0}};
-            carry   = offset == 5'b0 ? op_m[0] : op_m[31-offset +1];
+//            result  = offset == 5'b0 ? 32'b0 : {op_m[(31-offset) :0], offset{1'b0} };
+//            carry   = offset == 5'b0 ? op_m[0] : op_m[31-offset +1];
+            {carry,result} = offset ==0 ? {op_m[0],32'b0} : {carrry,op_m}<<offset;
         end
         //SRTYPE_LSR
         2'b01:begin
-            result  = offset == 5'b0 ? 32'b0 : {offset{1'b0},op_m[31:offset]};
-            carry   = offset == 5'b0 ? op_m[31] : op_m[offset-1];
+  //          result  = offset == 5'b0 ? 32'b0 : {offset{1'b0},op_m[31:offset]};
+    //        carry   = offset == 5'b0 ? op_m[31] : op_m[offset-1];
+            {result,carry} = offset == 0 ? {32'b0,op_m[31]} : {op_m,carry}>>offset;
         end
         //SRTYPE_ASR
         2'b10:begin
-            result  = offset == 5'b0 ? {32{op_m[31]}} : {offset[op_m[31],op_m[31:offset]};
-            carry   = offset == 5'b0 ? op_m[31] : op_m[offset-1];
+//            result  = offset == 5'b0 ? {32{op_m[31]}} : {offset[op_m[31],op_m[31:offset]};
+  //          carry   = offset == 5'b0 ? op_m[31] : op_m[offset-1];
+              {result,carry} = offset == 0 ? {33{op_m[31]}}  : {op_m,carry}>>offset | { {32{op_m[31]}}<<(32-offset) , 1'b0 };            
         end
         //SRTYPE_RRX & SRTYPE_ROR
         2'b11:begin
-            result  = offset == 0 ? {carry_in,op_m[31:1]} : {op_m[offset-1:0],op_m[31:offset]};
-            carry   = offset == 0 ? op_m[0] : op_m[offset-1];
+            {result,carry}  = offset == 0 ? {carry_in,op_m} : {op_m,carry}>>offset | {op_m<<(32-offset), 1'b0};
+  //          carry   = offset == 0 ? op_m[0] : op_m[offset-1];
+                  
+
         end
     endcase
 end

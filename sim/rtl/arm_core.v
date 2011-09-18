@@ -16,11 +16,14 @@
 `include "inst_fetch.v"
 `include "xpsr_reg.v"
 `include "pre_dec.v"
+`include "inst_pattern_match.v"
+`include "reg_file.v"
+`include "shift.v"
 
 module arm_core(
 input [15:0]inst_hw,
 input rst,
-input clk,
+input clk
 
 //temperary output
 );
@@ -90,7 +93,7 @@ inst_pattern_match  u_inst_pattern_match(inst, clk, cur_carry, rd_addr, rn_addr,
 reg_file            u_reg_file(rn_addr, rm_addr, rd_addr, rf_w_en, clk, rn_data, rm_data, rd_data);
 shift               u_shift(s_type, s_offset, rn_data, cur_carry, shifted_rn_data, next_carry);
 
-valid_rn_data   = shift_or_not ? shifted_rn_data: rn_data;
-oprand2         = imm_or_reg ? imm32: valid_rn_data;
-oprand1         = rm_data;
+assign valid_rn_data   = shift_or_not ? shifted_rn_data: rn_data;
+assign oprand2         = imm_or_reg ? imm32: valid_rn_data;
+assign oprand1         = rm_data;
 endmodule

@@ -35,20 +35,20 @@ module inst_pattern_match(
 always @ (posedge clk)begin
     casex(inst[31:15])
         //pattern 1:
-        17'b11110?01010?????0://ADC(imm) T1
-        17'b11110?01000?????0://ADD(imm) T3
+        17'b11110?01010?????0,//ADC(imm) T1
+        17'b11110?01000?????0,//ADD(imm) T3
         17'b11110?01000?11010://ADD(SP plus imm) T3
         begin
             rd = inst[11:8];
             rm = inst[19:16];
-            thumb_expand_imm({inst[26],inst[14:12],inst[7:0]}, carry_in, imm32, carry_out);
+            thumb_expand_imm u({inst[26],inst[14:12],inst[7:0]}, carry_in, imm32, carry_out);
             imm_or_reg = 1'b1;
 
         end
         //pattern 2:
-        17'b11110?100000????0://ADD(imm) T4
-        17'b11110?10000011010://ADD(SP plus imm) T4
-        17'b11110?10101011110://ADR T2
+        17'b11110?100000????0,//ADD(imm) T4
+        17'b11110?10000011010,//ADD(SP plus imm) T4
+        17'b11110?10101011110,//ADR T2
         17'b11110?10000011110://ADR T3
         begin
             rd = inst[11:8];
@@ -57,8 +57,8 @@ always @ (posedge clk)begin
             imm_or_reg = 1'b1;
         end
         //pattern 3:
-        17'b11101011010?????0://ADC(reg) T2
-        17'b11101011000?????0://ADD(reg) T3
+        17'b11101011010?????0,//ADC(reg) T2
+        17'b11101011000?????0,//ADD(reg) T3
         17'b11101011000?11010://ADD(SP plus reg) T3
         begin
             rd = inst[11:8];
@@ -85,12 +85,12 @@ always @ (posedge clk)begin
         begin
             rd = {1'b0,inst[18:16]};
             rm = {1'b0,inst[21:19]};
-            imm32 = {29'b0,inst[24:22];
+            imm32 = {29'b0,inst[24:22]};
             imm_or_reg = 1'b1;
         end
         //pattern 6:
-        17'b00110????????????://ADD(imm) T2
-        17'b10101????????????://ADD(SP plus imm) T1
+        17'b00110????????????,//ADD(imm) T2
+        17'b10101????????????,//ADD(SP plus imm) T1
         17'b10100????????????://ADR T1
         begin
             rd = {1'b0,inst[26:24]};
@@ -117,7 +117,7 @@ always @ (posedge clk)begin
             shift_or_not = 1'b0;
         end
         //pattern 9:
-        17'b01000100?????????://ADD(reg) T2
+        17'b01000100?????????,//ADD(reg) T2
         17'b010001001????101?://ADD(SP plus reg) T2
         begin
             rd = {inst[23],inst[18:16]};
