@@ -112,7 +112,7 @@ my    $len=1;
 
 my $addr=0;
 foreach (@inst){
-    print "@",$addr," ";
+    printf("@%x ",$addr);
     $addr++;
     printf("%x\n",$_);
 

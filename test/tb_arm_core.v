@@ -26,7 +26,6 @@
  reg clk;
  reg rst;
  reg [31:0] pc;
- wire [31:0]inst;
 
  reg [15:0] inst_mem[ADDR_END + 100 : 0];
  reg[4:0] en_apsr_reg;
@@ -46,23 +45,25 @@
  assign u_arm_core.u_xpsr_reg.en_apsr = en_apsr_reg;
  assign u_arm_core.u_xpsr_reg.en_ipsr = en_ipsr_reg;
 
+ //APSR set disabled now when initialization.It will be all ZERO during the
+ //simulation.
+ assign u_arm_core.u_xpsr_reg.set_data[31:27] = apsr_reg;
+
  //Add drawout probe 
  wire        hint_or_exc = u_arm_core.u_pre_dec.hint_or_exc;
  wire [3:0]  cur_cond    = u_arm_core.u_pre_dec.cur_cond;
-
  wire [7:0]  it_status   = {u_arm_core.u_xpsr_reg.epsr[6:1],u_arm_core.u_xpsr_reg.epsr[9:8]};
  wire [31:0] cur_inst    = u_arm_core.u_if.valid_inst;
  wire        inst_valid  = u_arm_core.inst_valid;
  wire [4:0]  apsr        = u_arm_core.u_xpsr_reg.apsr;
  wire        in_it_blk   = u_arm_core.u_xpsr_reg.in_it_blk;
-
- assign u_arm_core.u_xpsr_reg.set_data[31:27] = apsr_reg;
+ wire [31:0] inst        = u_arm_core.u_pre_dec.inst_out;
 
  //input Signals initialization 
  initial begin
      clk     = 0;
      apsr_reg = 5'b0;
-     en_apsr_reg =5'b11111;
+     en_apsr_reg =5'b0;
      en_ipsr_reg =0;
      pc= 0;
      rst     = 1;
@@ -86,7 +87,8 @@ initial begin
     
     //Logging TARGET signals 
     fd_stage_one  =   $fopen("./stage_1_output.log","w");
-    
+    fd_stage_two  =   $fopen("./stahe_2_output.log","w");
+
     //Dump waveform
     $fsdbDumpfile("./wavevform.fsdb");
     $fsdbDumpvars();
@@ -122,8 +124,12 @@ always @ (posedge clk)begin
         $finish;
     end
     #1  $fdisplay(fd_stage_one,"next_inst_hw = [%h]\tcur_inst = [%h]\thint_or_exc = [%b]\tinst_valid = %b\tvalid_inst = [%h]\tcur_cond = [%b]\tmask = [%b]\tpc = [%d]\t@ %d",
-        inst_hw,   cur_inst, hint_or_exc, inst_valid, inst, it_status[7:4],it_status[3:0], pc, $time);
+        inst_hw,   cur_inst, hint_or_exc, inst_valid, inst, cur_cond,it_status[3:0], pc, $time);
 end
+
+
+
+
 
 /************************************S t a g e      O n e       A s s e r t i o n*****************************************/
 

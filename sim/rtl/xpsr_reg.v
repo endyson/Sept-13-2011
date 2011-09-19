@@ -112,8 +112,10 @@ input inst_valid,
                 if(inst_valid)begin
        // IT_STATUS[7:0] = {xPSR[15:12],xPSR[11:10],xPSR[26:25]}
        // EPSR[9:0]      = {xPSR[26:25], T, xPSR[15:10],a} 
-                    if({epsr[1],epsr[9:8]} == 3'b000)   {epsr[6:3],epsr[2:1],epsr[9:8]} <= 8'b0;
-                    else                    {epsr[3:1],epsr[9:8]} <= {epsr[3:1],epsr[9:8]}<<1;
+                    if({epsr[1],epsr[9:8]} == 3'b000)
+                        {epsr[6:3],epsr[2:1],epsr[9:8]} <= 8'b0;
+                    else
+                        {epsr[3:1],epsr[9:8]} <= ({epsr[3:1],epsr[9:8]}<<1);
                 end
             end
             //Other situations are left undefined, and should never occuer!

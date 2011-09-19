@@ -47,22 +47,22 @@ assign inst_out = hint_or_exc ? 32'b0: inst_in;
 
 //IT or Branch check logical
 always @ */*inst_in[31:24]*/ begin
-    casex(inst_in[31:24])
-        8'b1101????:begin
+    casex({inst_in[31:24],inst_in[15:14],inst_in[12]})
+        11'b1101???????:begin
             cur_cond    <=  inst_in[27:24];
             //b           <=  1'b1;
             it_flag     <=  1'b0;
             it_status   <=  8'b0;
             unpred      <=  in_it_blk;
         end
-        8'b11110???:begin
+        11'b11110???100:begin
             cur_cond    <=  inst_in[25:22];
             //b           <=  1'b1;
             it_flag     <=  1'b0;
             it_status   <=  8'b0;
             unpred      <=  in_it_blk;
         end
-        8'b10111111:begin
+        11'b10111111???:begin
             cur_cond    <=  4'b0;
             //b           <=  1'b0;
             it_flag     <=  1'b1;

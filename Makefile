@@ -17,8 +17,8 @@ build_tree:
 	@if test ! -d ${DB_DIR};then\
 	mkdir -p ${DB_DIR};fi
 run:run
-it:	build_tree tb_arm_core run
-it_v:build_tree tb_arm_core run it_verify
+#it:	build_tree tb_arm_core run
+it:build_tree tb_arm_core run it_verify
 clean:
 	@echo "Cleaned up!"
 	@rm -rf ${OUT_DIR}

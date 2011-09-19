@@ -1,0 +1,121 @@
+srcSourceCodeView
+srcResizeWindow 249 111 804 500
+debImport "-f" "arm_core.f"
+wvCreateWindow
+wvResizeWindow -win $_nWave2 50 214 960 332
+wvResizeWindow -win $_nWave2 55 236 960 332
+wvSetPosition -win $_nWave2 {("G1" 0)}
+wvOpenFile -win $_nWave2 \
+           {/mnt/hgfs/Projects/local_repo/github/out/log/wavevform.fsdb}
+srcDeselectAll -win $_nTrace1
+srcResizeWindow 70 31 1111 500
+srcDeselectAll -win $_nTrace1
+srcSelect -signal "it_status\[3:0\]" -win $_nTrace1
+srcAddSelectedToWave -win $_nTrace1
+srcHBSelect "tb_arm_core.u_arm_core.u_xpsr_reg" -win $_nTrace1
+srcSetScope -win $_nTrace1 "tb_arm_core.u_arm_core.u_xpsr_reg" -delim "."
+srcDeselectAll -win $_nTrace1
+srcSelect -signal "in_it_blk" -win $_nTrace1
+srcAddSelectedToWave -win $_nTrace1
+wvResizeWindow -win $_nWave2 -4 0 1366 721
+wvZoomIn -win $_nWave2
+wvSelectSignal -win $_nWave2 {( "G1" 1 )} 
+wvSetPosition -win $_nWave2 {("G1" 1)}
+wvExpandBus -win $_nWave2 {("G1" 1)}
+wvSetPosition -win $_nWave2 {("G1" 6)}
+wvSelectSignal -win $_nWave2 {( "G1" 1 )} 
+wvSetPosition -win $_nWave2 {("G1" 1)}
+wvCollapseBus -win $_nWave2 {("G1" 1)}
+wvSetPosition -win $_nWave2 {("G1" 1)}
+wvSetPosition -win $_nWave2 {("G1" 2)}
+wvSetCursor -win $_nWave2 38506.923683 -snap {("G2" 0)}
+srcDeselectAll -win $_nTrace1
+srcHBSelect "tb_arm_core.u_arm_core" -win $_nTrace1
+srcSetScope -win $_nTrace1 "tb_arm_core.u_arm_core" -delim "."
+srcHBSelect "tb_arm_core" -win $_nTrace1
+srcSetScope -win $_nTrace1 "tb_arm_core" -delim "."
+srcDeselectAll -win $_nTrace1
+srcSelect -signal "it_status\[3:0\]" -win $_nTrace1
+srcDeselectAll -win $_nTrace1
+srcSelect -signal "it_status\[3:0\]" -win $_nTrace1
+srcDeselectAll -win $_nTrace1
+srcSelect -signal "it_status\[3:0\]" -win $_nTrace1
+srcTraceDriver "tb_arm_core.it_status\[3:0\]" -win $_nTrace1
+srcDeselectAll -win $_nTrace1
+srcSelect -win $_nTrace1 -signal {u_arm_core.u_xpsr_reg.epsr[6:1]} -line 52 -pos \
+          1
+srcHBSelect "tb_arm_core.u_arm_core.u_xpsr_reg" -win $_nTrace1
+srcSetScope -win $_nTrace1 "tb_arm_core.u_arm_core.u_xpsr_reg" -delim "."
+srcDeselectAll -win $_nTrace1
+srcDeselectAll -win $_nTrace1
+srcHBSelect "tb_arm_core.u_arm_core" -win $_nTrace1
+srcHBSelect "tb_arm_core" -win $_nTrace1
+srcSetScope -win $_nTrace1 "tb_arm_core" -delim "."
+srcDeselectAll -win $_nTrace1
+srcSelect -signal "inst_hw" -win $_nTrace1
+srcDeselectAll -win $_nTrace1
+srcSelect -signal "cur_inst" -win $_nTrace1
+srcAddSelectedToWave -win $_nTrace1
+srcDeselectAll -win $_nTrace1
+srcSelect -signal "clk" -win $_nTrace1
+srcAddSelectedToWave -win $_nTrace1
+wvSelectGroup -win $_nWave2 {G2}
+wvZoomIn -win $_nWave2
+wvZoomIn -win $_nWave2
+wvZoomIn -win $_nWave2
+wvZoomIn -win $_nWave2
+wvResizeWindow -win $_nWave2 -4 0 1366 721
+srcDeselectAll -win $_nTrace1
+srcDeselectAll -win $_nTrace1
+srcSelect -signal "inst_valid" -win $_nTrace1
+srcAddSelectedToWave -win $_nTrace1
+wvSetCursor -win $_nWave2 14523.814548 -snap {("G2" 0)}
+wvSetCursor -win $_nWave2 13291.054107
+wvSetCursor -win $_nWave2 12437.604571 -snap {("G1" 1)}
+wvSetCursor -win $_nWave2 13101.398655 -snap {("G1" 1)}
+wvSetCursor -win $_nWave2 13404.847379
+wvSetCursor -win $_nWave2 13177.260836
+wvSetCursor -win $_nWave2 13177.260836
+wvSetCursor -win $_nWave2 12684.156659
+wvSelectSignal -win $_nWave2 {( "G1" 1 )} 
+wvSetPosition -win $_nWave2 {("G1" 1)}
+wvExpandBus -win $_nWave2 {("G1" 1)}
+wvSetPosition -win $_nWave2 {("G1" 9)}
+wvSelectSignal -win $_nWave2 {( "G1" 1 )} 
+wvSetPosition -win $_nWave2 {("G1" 1)}
+wvCollapseBus -win $_nWave2 {("G1" 1)}
+wvSetPosition -win $_nWave2 {("G1" 1)}
+wvSetPosition -win $_nWave2 {("G1" 5)}
+srcDeselectAll -win $_nTrace1
+srcHBSelect "tb_arm_core.u_arm_core.u_xpsr_reg" -win $_nTrace1
+srcSetScope -win $_nTrace1 "tb_arm_core.u_arm_core.u_xpsr_reg" -delim "."
+srcDeselectAll -win $_nTrace1
+srcSelect -signal "inst_valid" -win $_nTrace1
+srcAddSelectedToWave -win $_nTrace1
+srcDeselectAll -win $_nTrace1
+srcSelect -signal "epsr\[1\]" -win $_nTrace1
+srcAddSelectedToWave -win $_nTrace1
+srcDeselectAll -win $_nTrace1
+srcSelect -signal "epsr\[9:8\]" -win $_nTrace1
+srcAddSelectedToWave -win $_nTrace1
+wvResizeWindow -win $_nWave2 55 236 960 332
+srcDeselectAll -win $_nTrace1
+srcSelect -signal "epsr\[3:1\]" -win $_nTrace1
+srcAddSelectedToWave -win $_nTrace1
+srcDeselectAll -win $_nTrace1
+srcSelect -signal "epsr\[9:8\]" -win $_nTrace1
+srcAddSelectedToWave -win $_nTrace1
+wvSetCursor -win $_nWave2 11399.512937 -snap {("G1" 9)}
+wvSetCursor -win $_nWave2 13139.434303
+wvSelectSignal -win $_nWave2 {( "G1" 9 )} 
+wvSelectSignal -win $_nWave2 {( "G1" 10 )} 
+wvSelectSignal -win $_nWave2 {( "G1" 10 )} 
+wvExpandBus -win $_nWave2 {("G1" 10)}
+wvSelectSignal -win $_nWave2 {( "G1" 12 )} 
+srcDeselectAll -win $_nTrace1
+wvSetCursor -win $_nWave2 17116.445850 -snap {("G1" 10)}
+wvSetCursor -win $_nWave2 12814.390090
+srcDeselectAll -win $_nTrace1
+srcSelect -signal "en_apsr" -win $_nTrace1
+srcAddSelectedToWave -win $_nTrace1
+debExit

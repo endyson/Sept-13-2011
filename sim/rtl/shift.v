@@ -31,7 +31,7 @@ always @ ( s_type or offset)begin
         2'b00:begin
 //            result  = offset == 5'b0 ? 32'b0 : {op_m[(31-offset) :0], offset{1'b0} };
 //            carry   = offset == 5'b0 ? op_m[0] : op_m[31-offset +1];
-            {carry,result} = offset ==0 ? {op_m[0],32'b0} : {carrry,op_m}<<offset;
+            {carry,result} = offset ==0 ? {op_m[0],32'b0} : {carry,op_m}<<offset;
         end
         //SRTYPE_LSR
         2'b01:begin

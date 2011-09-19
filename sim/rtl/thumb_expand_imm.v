@@ -14,7 +14,6 @@
  */
 `ifndef THUMB_EXPAND_IMM_H
 `define THUMB_EXPAND_IMM_H
-`include "shift.v"
 
 module thumb_expand_imm(
 input [11:0]imm12,
@@ -33,7 +32,7 @@ always @ * begin
         carry_out = carry_in;
     end
     else begin
-        shift(2'b11, imm12[11:7],{24'b0,1'b1,imm12[6:0]}, carry_in, imm32, carry_out); 
+      {imm32,carry_out} = {24'b0,1'b1,imm12[6:0],carry_out}>>imm12[11:7] | {{24'b0,1'b1,imm12[6:0]}<<(32-imm12[11:7]),1'b0}; 
     end
 
 end

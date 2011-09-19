@@ -15,7 +15,7 @@ run:
 
 it_verify:tb_arm_core
 	@echo "Verifying the Output signal's Correctness!\n"
-	@${TOOLS_DIR}/stage_1_output_chk.pl  ${LOG_DIR}/stage_1_output.log
+	@cd ${LOG_DIR} && ${TOOLS_DIR}/stage_1_output_chk.pl  ${LOG_DIR}/stage_1_output.log | grep next_ >stage_1_chk_failed.log
 
 tb_inst_fetch:if_gen 
 	@echo "Entering into ${LOG_DIR}"

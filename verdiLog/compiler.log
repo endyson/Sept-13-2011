@@ -1,0 +1,71 @@
+*design* DebussyLib (btIdent 2011.01)
+Command arguments:
+    +define+verilog
+    -f arm_core.f
+        test/tb_arm_core.v
+        sim/rtl/arm_core.v
+        sim/rtl/inst_fetch.v
+        sim/rtl/pre_dec.v
+        sim/rtl/xpsr_reg.v
+        sim/rtl/reg.v
+        sim/rtl/mux.v
+
+
+*Error* `include file "arm_core.v" cannot be read
+"test/tb_arm_core.v", 16: 
+
+*Error* `include file "xpsr_reg.v" cannot be read
+"test/tb_arm_core.v", 17: 
+
+*Error* `include file "inst_fetch.v" cannot be read
+"sim/rtl/arm_core.v", 16: 
+
+*Error* `include file "xpsr_reg.v" cannot be read
+"sim/rtl/arm_core.v", 17: 
+
+*Error* `include file "pre_dec.v" cannot be read
+"sim/rtl/arm_core.v", 18: 
+
+*Error* `include file "inst_pattern_match.v" cannot be read
+"sim/rtl/arm_core.v", 19: 
+
+*Error* `include file "reg_file.v" cannot be read
+"sim/rtl/arm_core.v", 20: 
+
+*Error* `include file "shift.v" cannot be read
+"sim/rtl/arm_core.v", 21: 
+
+*Error* `include file "reg.v" cannot be read
+"sim/rtl/inst_fetch.v", 15: 
+
+*Error* `include file "mux.v" cannot be read
+"sim/rtl/inst_fetch.v", 16: 
+
+*Error* `include file "reg.v" cannot be read
+"sim/rtl/xpsr_reg.v", 18: 
+*Error*  syntax error
+"sim/rtl/xpsr_reg.v", 94: for (i=0;i<5;i+<-
+*Error*  syntax error - illegal use of Verilog keyword 'end' at current location.
+"sim/rtl/xpsr_reg.v", 96: end<-
+
+*Error* missing end in for statement
+"sim/rtl/xpsr_reg.v", 94: 
+Highest level modules:
+tb_arm_core
+dff_en
+reg_8
+reg_8_en
+reg_32_en
+mux_32_32
+mux_4_4
+
+
+*Error* view inst_pattern_match is not defined for inst u_inst_pattern_match
+"sim/rtl/arm_core.v", 93: 
+
+*Error* view reg_file is not defined for inst u_reg_file
+"sim/rtl/arm_core.v", 94: 
+
+*Error* view shift is not defined for inst u_shift
+"sim/rtl/arm_core.v", 95: 
+Total	17 error(s),   0 warning(s)
