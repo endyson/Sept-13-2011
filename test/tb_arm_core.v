@@ -20,6 +20,7 @@
 
  parameter ADDR_END=9*256 + 3*16 + 4*16 + 9*256;
  integer fd_stage_one;
+ integer fd_stage_two;
 
  //Interconnection declarition
  wire [15:0]inst_hw;
@@ -94,7 +95,16 @@ initial begin
     $fsdbDumpvars();
 end
 
-//Stage One Logging
+//Register Initialization
+initial begin
+integer i;
+    for(i=0; i<16; i++)
+        $readmemh("./reg_file_ini.dat",u_arm_core.u_reg_file.reg_32[i].out,i);
+end
+
+//////////////////////////////////////////////////////////////
+//S t a g e      O n e       L o g g i n g
+//////////////////////////////////////////////////////////////
 //Log head
 always @ (posedge clk )begin
     if ( cur_inst[31:24] == 8'hbf)begin
@@ -119,14 +129,25 @@ always @ (posedge clk)begin
     if(pc == 9*256 + 3*16)begin
          apsr_reg = ~apsr_reg;
     end
-
-    if(pc == ADDR_END )begin
-        $finish;
-    end
     #1  $fdisplay(fd_stage_one,"next_inst_hw = [%h]\tcur_inst = [%h]\thint_or_exc = [%b]\tinst_valid = %b\tvalid_inst = [%h]\tcur_cond = [%b]\tmask = [%b]\tpc = [%d]\t@ %d",
         inst_hw,   cur_inst, hint_or_exc, inst_valid, inst, cur_cond,it_status[3:0], pc, $time);
 end
 
+
+//////////////////////////////////////////////////////////////
+//S t a g e      T w o       L o g g i n g
+//////////////////////////////////////////////////////////////
+//Log head
+always @ (posedge clk)begin
+    
+end
+
+///////////////////////////////////////////////////////////////
+//T e r m i n a t i o n
+///////////////////////////////////////////////////////////////
+always @ (posedge clk)begin
+    if(pc == ADDR_END) $finish;
+end
 
 
 

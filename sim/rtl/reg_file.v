@@ -36,8 +36,9 @@ assign rm_data = reg_data_ary[rm_addr];
 
 generate
 genvar i;
-for(i=0;i<16;i++)
+for(i=0;i<16;i++)begin:reg_32
     reg_32_en u_reg_32_x(rd_data,clk,en_reg_x[i] & w_en,reg_data_ary[i]);
+end
 endgenerate
 
 always @ * begin
