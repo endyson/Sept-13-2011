@@ -88,7 +88,7 @@ initial begin
     
     //Logging TARGET signals 
     fd_stage_one  =   $fopen("./stage_1_output.log","w");
-    fd_stage_two  =   $fopen("./stahe_2_output.log","w");
+    fd_stage_two  =   $fopen("./stage_2_output.log","w");
 
     //Dump waveform
     $fsdbDumpfile("./wavevform.fsdb");
@@ -96,12 +96,14 @@ initial begin
 end
 
 //Register Initialization
+wire [31:0]reg_out=u_arm_core.u_reg_file.regfile[1].u_reg_32_x.out;
+/*
 initial begin
 integer i;
     for(i=0; i<16; i++)
-        $readmemh("./reg_file_ini.dat",u_arm_core.u_reg_file.reg_32[i].out,i);
+       $readmemh("./reg_file_ini.dat",u_arm_core.u_reg_file.regfile[i].u_reg_32_x.out);
 end
-
+*/
 //////////////////////////////////////////////////////////////
 //S t a g e      O n e       L o g g i n g
 //////////////////////////////////////////////////////////////
@@ -138,8 +140,21 @@ end
 //S t a g e      T w o       L o g g i n g
 //////////////////////////////////////////////////////////////
 //Log head
+wire [3:0] rn_addr = u_arm_core.rn_addr;
+wire [3:0] rm_addr = u_arm_core.rm_addr;
+wire [3:0] rd_addr = u_arm_core.rd_addr;
+wire [31:0] rn_data = u_arm_core.rn_data;
+wire [31:0] rm_data = u_arm_core.rm_data;
+wire [31:0] rd_data = u_arm_core.rd_data;
+wire [31:0] op1 = u_arm_core.oprand1;
+wire [31:0] op2 = u_arm_core.oprand2;
+wire imm_or_reg = u_arm_core.imm_or_reg;
+wire shift_or_not = u_arm_core.shift_or_not;
+wire thumb_or_not = u_arm_core.thumb_or_not;
+
 always @ (posedge clk)begin
-    
+   #1 $fdisplay(fd_stage_two,"Rn_A=[%d]\tRm_A=[%d]\tRd_A=[%d]\tRn_D=[%d]\tRm_D=[%d]\tRd_D=[%d]\timm_or_reg=[%b]\tshift_or_not=[%b]\tthumb_or_not=[%b]\top1=[%d]\top2=[%d]\n",
+                rn_addr,rm_addr,rd_addr,rn_data,rm_data,rd_data,imm_or_reg,shift_or_not,thumb_or_not,op1,op2);
 end
 
 ///////////////////////////////////////////////////////////////

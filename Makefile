@@ -1,12 +1,6 @@
 include Makefile.in
 include ${TEST_DIR}/Makefile
 
-ib: tb_ib 
-
-if:  tb_inst_fetch 
-
-cp:  tb_cond_pass
-
 build_tree:
 	@if test ! -d ${OUT_DIR} ;then\
 	mkdir -p ${OUT_DIR};fi
@@ -16,9 +10,13 @@ build_tree:
 	mkdir -p ${LOG_DIR};fi
 	@if test ! -d ${DB_DIR};then\
 	mkdir -p ${DB_DIR};fi
-run:run
-#it:	build_tree tb_arm_core run
-it:build_tree tb_arm_core run it_verify
+
+dryrun:run
+
+it:build_tree stage_1
+
+dec:build_tree stage_2
+
 clean:
 	@echo "Cleaned up!"
 	@rm -rf ${OUT_DIR}
