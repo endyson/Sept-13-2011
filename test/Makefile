@@ -4,7 +4,15 @@ stage_1_gen:
 
 stage_2_gen:
 	@echo "Generating test instructions for Decode operation"
-	@cd ${LOG_DIR} && perl ${TOOLS_DIR}/inst_stage_2_gen.pl  | grep @ >inst.dat
+	@cd ${LOG_DIR} && perl ${TOOLS_DIR}/inst_stage_2_gen.pl >inst_stage_2_gen.dat
+	@cd ${LOG_DIR} && grep @ inst_stage_2_gen.dat >inst.dat
+	@cd ${LOG_DIR} && grep i= inst_stage_2_gen.dat > i.dat
+	@cd ${LOG_DIR} && grep rn= inst_stage_2_gen.dat > rn_addr.dat
+	@cd ${LOG_DIR} && grep rd= inst_stage_2_gen.dat > rd_addr.dat
+	@cd ${LOG_DIR} && grep rm= inst_stage_2_gen.dat > rm_addr.dat
+	@cd ${LOG_DIR} && grep imm3= inst_stage_2_gen.dat > imm3.dat
+	@cd ${LOG_DIR} && grep imm7= inst_stage_2_gen.dat > imm7.dat
+	@cd ${LOG_DIR} && grep imm8= inst_stage_2_gen.dat > imm8.dat
 
 run:
 	@echo "Running the Simulation"
@@ -13,6 +21,7 @@ run:
 stage_1_verify:build_test
 	@echo "Verifying the Output signals of Stage One!"
 	@cd ${LOG_DIR} && ${TOOLS_DIR}/stage_1_output_chk.pl  ${LOG_DIR}/stage_1_output.log | grep next_ >stage_1_chk_failed_signals.log
+
 
 stage_2_verify:build_test
 	@echo "Verifying the Output signals of Stage two!"

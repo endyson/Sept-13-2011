@@ -1,0 +1,104 @@
+13       
+0 arm_core.v
+0 inst_fetch.v
+0 reg.v
+0 mux.v
+0 xpsr_reg.v
+0 reg.v
+0 pre_dec.v
+0 inst_pattern_match.v
+0 reg_file.v
+0 reg.v
+0 shift.v
+0 thumb_expand_imm.v
+0 xpsr_reg.v
+31
++incdir+/mnt/hgfs/Projects/local_repo/github/sim/rtl+/mnt/hgfs/Projects/local_repo/github/sim/psl
++v2k
+-Mamsrun=
+-Masflags=
+-Mcc=gcc
+-Mcfl= -pipe -O -I/opt/synopsys/vcs/E-2011.03/include
+-Mcmodrun=
+-Mcplusplus=g++
+-Mcrt0=
+-Mcrtn=
+-Mcsrc=
+-Mdir=/mnt/hgfs/Projects/local_repo/github/out/db
+-Mdir=/mnt/hgfs/Projects/local_repo/github/out/db
+-Mldflags=-melf_i386
+-Mobjects= /opt/synopsys/vcs/E-2011.03/linux/lib/libvirsim.so /opt/synopsys/vcs/E-2011.03/linux/lib/librterrorinf.so /opt/synopsys/vcs/E-2011.03/linux/lib/libsnpsmalloc.so /opt/novas/2011.01/share/PLI/vcs_latest/LINUX/pli.a
+-Mout=/mnt/hgfs/Projects/local_repo/github/out/run/simv
+-Msaverestoreobj=/opt/synopsys/vcs/E-2011.03/linux/lib/vcs_save_restore_new.o
+-Msyslibs=/opt/synopsys/vcs/E-2011.03/linux/lib/ctype-stubs_32.a -ldl -lm
+-Mvcsaceobjs=
+-P
+-cm_xmldb
+-gen_obj
+-o /mnt/hgfs/Projects/local_repo/github/out/run/simv
+-psl
+-pslfile
+-sverilog
+-v2005
+/mnt/hgfs/Projects/local_repo/github/sim/psl/xpsr_reg.psl
+/mnt/hgfs/Projects/local_repo/github/test/tb_arm_core.v
+/opt/novas/2011.01/share/PLI/vcs_latest/LINUX/verdi.tab
+/opt/synopsys/vcs/E-2011.03/linux/bin/vcs1
+35
+XAUTHORITY=/home/endyson/.Xauthority
+VMR_MODE_FLAG=32
+VCS_HOME=/opt/synopsys/vcs/E-2011.03
+VCS_DEPTH=0
+VCS_ARG_ADDED_FOR_TMP=1
+VCS_ARCH=linux
+VCS_AMD_PURE32=1
+UNAME=/bin/uname
+TOOL_HOME=/opt/synopsys/vcs/E-2011.03/linux
+SYNOPSYS=/opt/synopsys/dc/D-2010.03-SP5-2
+SSH_AUTH_SOCK=/tmp/ssh-wsGMPR3892/agent.3892
+SSH_ASKPASS=/usr/libexec/openssh/gnome-ssh-askpass
+SSH_AGENT_PID=3893
+SNPSLMD_LICENSE_FILE=/opt/synopsys/synopsys.dat:/opt/synopsys/vcs/E-2011.03/flexlm//license.dat
+SESSION_MANAGER=local/ant-endyson.localdomain:/tmp/.ICE-unix/3860
+SCRNAME=vcs
+SCRIPT_NAME=vcs
+PT_HOME=/opt/synopsys/pt/D-2010.06-SP3-4
+OVA_UUM=0
+NOVAS_HOME=/opt/novas/2011.01
+MFLAGS=
+MAKELEVEL=1
+MAKEFLAGS=
+LESSOPEN=|/usr/bin/lesspipe.sh %s
+INPUTRC=/etc/inputrc
+HOSTNAME=ant-endyson.localdomain
+G_BROKEN_FILENAMES=1
+GTK_RC_FILES=/etc/gtk/gtkrc:/home/endyson/.gtkrc-1.2-gnome2
+GNOME_KEYRING_SOCKET=/tmp/keyring-Iijji5/socket
+GNOME_DESKTOP_SESSION_ID=Default
+GDMSESSION=default
+DESKTOP_SESSION=default
+DC_HOME=/opt/synopsys/dc/D-2010.03-SP5-2
+DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-NDuYNFeXoM
+COLORTERM=gnome-terminal
+0
+13
+1316057756 /mnt/hgfs/Projects/local_repo/github/sim/psl/xpsr_reg.psl
+1316388434 /mnt/hgfs/Projects/local_repo/github/sim/rtl/thumb_expand_imm.v
+1316380434 /mnt/hgfs/Projects/local_repo/github/sim/rtl/shift.v
+1316501176 /mnt/hgfs/Projects/local_repo/github/sim/rtl/reg_file.v
+1316382724 /mnt/hgfs/Projects/local_repo/github/sim/rtl/inst_pattern_match.v
+1316385762 /mnt/hgfs/Projects/local_repo/github/sim/rtl/pre_dec.v
+1316387333 /mnt/hgfs/Projects/local_repo/github/sim/rtl/xpsr_reg.v
+1316057756 /mnt/hgfs/Projects/local_repo/github/sim/rtl/mux.v
+1316057756 /mnt/hgfs/Projects/local_repo/github/sim/rtl/reg.v
+1316057756 /mnt/hgfs/Projects/local_repo/github/sim/rtl/inst_fetch.v
+1316498927 /mnt/hgfs/Projects/local_repo/github/sim/rtl/arm_core.v
+1316501725 /mnt/hgfs/Projects/local_repo/github/test/tb_arm_core.v
+1294178799 /opt/novas/2011.01/share/PLI/vcs_latest/LINUX/verdi.tab
+5
+0 
+1298523739 /opt/synopsys/vcs/E-2011.03/linux/lib/libvirsim.so
+1298523341 /opt/synopsys/vcs/E-2011.03/linux/lib/librterrorinf.so
+1298523301 /opt/synopsys/vcs/E-2011.03/linux/lib/libsnpsmalloc.so
+1294178799 /opt/novas/2011.01/share/PLI/vcs_latest/LINUX/pli.a
+1316588574 /mnt/hgfs/Projects/local_repo/github/out/run/simv.daidir
