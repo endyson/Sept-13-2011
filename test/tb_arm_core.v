@@ -87,8 +87,8 @@ initial begin
     $readmemh("./inst.dat",inst_mem);
     
     //Logging TARGET signals 
-    fd_stage_one  =   $fopen("./stage_1_output.log","w");
-    fd_stage_two  =   $fopen("./stage_2_output.log","w");
+    fd_stage_one  =   $fopen("./stage_1_output_sim.log","w");
+    fd_stage_two  =   $fopen("./stage_2_output_sim.log","w");
 
     //Dump waveform
     $fsdbDumpfile("./wavevform.fsdb");
@@ -107,34 +107,13 @@ end
 //////////////////////////////////////////////////////////////
 //S t a g e      O n e       L o g g i n g
 //////////////////////////////////////////////////////////////
-//Log head
-always @ (posedge clk )begin
-    if ( cur_inst[31:24] == 8'hbf)begin
-        $fdisplay(fd_stage_one,"*******************************************************************************************************");
-        $fdisplay(fd_stage_one,"IT Status = [%b]\tAPSR = [%b]",cur_inst[23:16], apsr);
-        case(it_status[7:5])
-            3'b000:$fdisplay(fd_stage_one,"Condition is EQ or NE:\tEQ[x1xxx]\tNE[x0xxx]");
-            3'b001:$fdisplay(fd_stage_one,"Condition is CS or CC:\tCS[xx1xx]\tCC[xx0xx]");
-            3'b010:$fdisplay(fd_stage_one,"Condition is MI or PL:\tMI[1xxxx]\tPL[0xxxx]");
-            3'b011:$fdisplay(fd_stage_one,"Condition is VS or VC:\tVS[xxx1x]\tVC[xxx0x]");
-            3'b100:$fdisplay(fd_stage_one,"Condition is HI or LS:\tHI[x01xx]\tLS[x??xx]");
-            3'b101:$fdisplay(fd_stage_one,"Condition is GE or LT:\tGE[SxxSx]\tLT[Sxxsx]");
-            3'b110:$fdisplay(fd_stage_one,"Condition is GT or LE:\tGT[S0xSx]\tLE[??x?x]");
-            3'b111:$fdisplay(fd_stage_one,"Condition is AL: Always Execute!");
-        endcase
-        $fdisplay(fd_stage_one,"-------------------------------------------------------------------------------------------------------");
-    end
-end
-
-//Log body
 always @ (posedge clk)begin
     if(pc == 9*256 + 3*16)begin
-         apsr_reg = ~apsr_reg;
+    //     apsr_reg = ~apsr_reg;
     end
-    #1  $fdisplay(fd_stage_one,"next_inst_hw = [%h]\tcur_inst = [%h]\thint_or_exc = [%b]\tinst_valid = %b\tvalid_inst = [%h]\tcur_cond = [%b]\tmask = [%b]\tpc = [%d]\t@ %d",
-        inst_hw,   cur_inst, hint_or_exc, inst_valid, inst, cur_cond,it_status[3:0], pc, $time);
+    #1  $fdisplay(fd_stage_one,"next_inst_hw=[%h]\tcur_inst=[%h]\thint_or_exc=[%b]\tinst_valid=%b\tvalid_inst=[%h]\tcur_cond=[%b]\tmask=[%b]\tapsr=[%b]\tpc=[%d]\t@ %d",
+        inst_hw,cur_inst, hint_or_exc, inst_valid, inst, cur_cond,it_status[3:0],apsr,pc, $time);
 end
-
 
 //////////////////////////////////////////////////////////////
 //S t a g e      T w o       L o g g i n g
@@ -152,10 +131,31 @@ wire imm_or_reg = u_arm_core.imm_or_reg;
 wire shift_or_not = u_arm_core.shift_or_not;
 wire thumb_or_not = u_arm_core.thumb_or_not;
 
-always @ (posedge clk)begin
-   #1 $fdisplay(fd_stage_two,"Rn_A=[%d]\tRm_A=[%d]\tRd_A=[%d]\tRn_D=[%d]\tRm_D=[%d]\tRd_D=[%d]\timm_or_reg=[%b]\tshift_or_not=[%b]\tthumb_or_not=[%b]\top1=[%d]\top2=[%d]\n",
-                rn_addr,rm_addr,rd_addr,rn_data,rm_data,rd_data,imm_or_reg,shift_or_not,thumb_or_not,op1,op2);
+//Sync the inst_valid signals to second stage for test purpose only
+//Used to control the $display task to print out the valid output signals at
+//stage two.
+reg inst_valid_stage_2;
+always @(posedge clk) inst_valid_stage_2 <= inst_valid;
+
+integer num_of_inst;
+integer fd_ex;
+
+initial begin 
+    num_of_inst = 0;
+    fd_ex=$fopen("num_of_inst","w");
 end
+
+always @ (posedge clk)begin
+    if(inst_valid_stage_2) num_of_inst++;
+    $fdisplay(fd_ex,"num_of_inst = %d", num_of_inst);
+end
+
+always @ (posedge clk)begin
+    if(inst_valid_stage_2)begin
+  #1   $fdisplay(fd_stage_two,"Rn_A=%h\tRm_A=%h\tRd_A=%h\tRn_D=%h\tRm_D=%h\tRd_D=%h\timm_or_reg=%b\tshift_or_not=%b\tthumb_or_not=%b\top1=%h\top2=%h",
+                rn_addr,rm_addr,rd_addr,rn_data,rm_data,rd_data,imm_or_reg,shift_or_not,thumb_or_not,op1,op2);
+        end
+    end
 
 ///////////////////////////////////////////////////////////////
 //T e r m i n a t i o n
@@ -163,9 +163,6 @@ end
 always @ (posedge clk)begin
     if(pc == ADDR_END) $finish;
 end
-
-
-
 
 /************************************S t a g e      O n e       A s s e r t i o n*****************************************/
 

@@ -92,8 +92,8 @@ COLORTERM=gnome-terminal
 1316057756 /mnt/hgfs/Projects/local_repo/github/sim/rtl/mux.v
 1316057756 /mnt/hgfs/Projects/local_repo/github/sim/rtl/reg.v
 1316057756 /mnt/hgfs/Projects/local_repo/github/sim/rtl/inst_fetch.v
-1316498927 /mnt/hgfs/Projects/local_repo/github/sim/rtl/arm_core.v
-1316501725 /mnt/hgfs/Projects/local_repo/github/test/tb_arm_core.v
+1316665656 /mnt/hgfs/Projects/local_repo/github/sim/rtl/arm_core.v
+1316673925 /mnt/hgfs/Projects/local_repo/github/test/tb_arm_core.v
 1294178799 /opt/novas/2011.01/share/PLI/vcs_latest/LINUX/verdi.tab
 5
 0 
@@ -101,4 +101,4 @@ COLORTERM=gnome-terminal
 1298523341 /opt/synopsys/vcs/E-2011.03/linux/lib/librterrorinf.so
 1298523301 /opt/synopsys/vcs/E-2011.03/linux/lib/libsnpsmalloc.so
 1294178799 /opt/novas/2011.01/share/PLI/vcs_latest/LINUX/pli.a
-1316588574 /mnt/hgfs/Projects/local_repo/github/out/run/simv.daidir
+1316673937 /mnt/hgfs/Projects/local_repo/github/out/run/simv.daidir

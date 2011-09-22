@@ -35,6 +35,9 @@ Command arguments:
 *Error* `include file "shift.v" cannot be read
 "sim/rtl/arm_core.v", 21: 
 
+*Error* `include file "thumb_expand_imm.v" cannot be read
+"sim/rtl/arm_core.v", 22: 
+
 *Error* `include file "reg.v" cannot be read
 "sim/rtl/inst_fetch.v", 15: 
 
@@ -61,11 +64,14 @@ mux_4_4
 
 
 *Error* view inst_pattern_match is not defined for inst u_inst_pattern_match
-"sim/rtl/arm_core.v", 93: 
+"sim/rtl/arm_core.v", 96: 
 
 *Error* view reg_file is not defined for inst u_reg_file
-"sim/rtl/arm_core.v", 94: 
+"sim/rtl/arm_core.v", 97: 
 
 *Error* view shift is not defined for inst u_shift
-"sim/rtl/arm_core.v", 95: 
-Total	17 error(s),   0 warning(s)
+"sim/rtl/arm_core.v", 98: 
+
+*Error* view thumb_expand_imm is not defined for inst u_thumb_expand_imm
+"sim/rtl/arm_core.v", 99: 
+Total	19 error(s),   0 warning(s)

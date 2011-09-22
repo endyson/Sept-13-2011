@@ -35,41 +35,41 @@ $pattern_1[1] = 0xf1000000; #ADD(imm)
 $pattern_1[2] = 0xf10d0000; #ADD(SP plus imm)
 
 my @pattern_2 =(
-0xf2000000, #ADD(imm) T4
-0xf20d0000, #ADD(SP plus imm) T4
-0xf2af0000, #ADR T2
-0xf20f0000, #ADR T3
+    0xf2000000, #ADD(imm) T4
+    0xf20d0000, #ADD(SP plus imm) T4
+    0xf2af0000, #ADR T2
+    0xf20f0000, #ADR T3
 
 );
 my @pattern_3 = (
-0xeb400000, #ADC(reg) T2
-0xeb000000, #ADD(reg) T3
-0xeb0d0000, #ADD(SP plus reg) T3
+    0xeb400000, #ADC(reg) T2
+    0xeb000000, #ADD(reg) T3
+    0xeb0d0000, #ADD(SP plus reg) T3
 
 );
 my @pattern_4 = (
-0x4140, #ADC(reg) T1
+    0x4140, #ADC(reg) T1
 
 );
 my @pattern_5 = (
-0x1c00, #ADD(imm) T1
+    0x1c00, #ADD(imm) T1
 
 );
 my @pattern_6 = (
-0x3000, #ADD(imm) T2
-0xa800, #ADD(SP plus imm) T1
-0xa000,  #ADR T1
+    0x3000, #ADD(imm) T2
+    0xa800, #ADD(SP plus imm) T1
+    0xa000,  #ADR T1
 );
 my @pattern_7 = (
-0xb000, #ADD(SP plus imm) T2
+    0xb000, #ADD(SP plus imm) T2
 );
 my @pattern_8 = (
-0x1800, #ADD(reg) T1
+    0x1800, #ADD(reg) T1
 );
 my @pattern_9 = (
-0x4400, #ADD(reg) T2
-0x4468, #ADD(SP plus reg) T1
-0x4485, #ADD(SP plus reg) T2
+    0x4400, #ADD(reg) T2
+    0x4468, #ADD(SP plus reg) T1
+    0x4485, #ADD(SP plus reg) T2
 );
 
 #####################
@@ -82,6 +82,7 @@ my $imm3;
 my $imm2;
 my $imm7;
 my $imm8;
+my $imm32;
 my $i;
 my $s_type;
 my $rdm;
@@ -125,21 +126,43 @@ foreach (@pattern_1){
         $p_Rd   = $rd<<8;
         $p_imm8 = $imm8;
 
-
-#        printf( "\$p_i    =%b\t\$i      =%b\n",$p_i,$i);
-#        printf( "\$p_Rn   =%b\t\$rn     =%b\n",$p_Rn,$rn);
-#        printf( "\$p_imm3 =%b\t\$imm3   =%b\n",$p_imm3,$imm3);
-#        printf( "\$p_Rd   =%b\t\$rd     =%b\n", $p_Rd,$rd);
-#        printf( "\$p_imm8 =%b\t\$imm8   =%b\n",$p_imm8,$imm8);
-#        print "*******************************\n";
-
         $inst[$pc++] = $_ | $p_i | $p_Rn | $p_imm3 | $p_Rd | $p_imm8;
 
-        printf( "i=%d\n",$i);                      
-        printf( "rn=%d\n",$rn);
-        printf( "imm3=%d\n",$imm3);
-        printf( "rd=%d\n",$rd);         
-        printf( "imm8=%d\n",$imm8);
+        #Thumb Expand Imm 
+        my $imm12 = ($i<<11) | ($imm3<<8) | $imm8;
+
+        my $imm12_11_10 = $imm12 & 0b1100_0000_0000;
+        my $imm12_9_8   = $imm12 & 0b0011_0000_0000;
+        my $imm12_7_0   = $imm12 & 0b0000_1111_1111;
+
+        my $imm12_6_0   = ($imm12 & 0b0000_0111_1111);
+
+        if( $imm12_11_10 == 0){
+            if( $imm12_9_8 == 0 ){
+                $imm32 = $imm12_7_0;
+                #  print "imm12_9_8 == 00\n";
+            }
+            elsif($imm12_9_8 == 0b0001_0000_0000 ){
+                $imm32 = $imm12_7_0 | ($imm12_7_0<<16);
+                # print "imm12_9_8 == 01\n";
+            }
+            elsif($imm12_9_8 == 0b0010_0000_0000 ){
+                $imm32 = ($imm12_7_0<<8) | ($imm12_7_0<<24);
+                # print "imm12_9_8 == 10\n";
+            }
+            elsif($imm12_9_8 == 0b0011_0000_0000 ){
+                $imm32 = ($imm12_7_0) | ($imm12_7_0<<8) | ($imm12_7_0<<16) | ($imm12_7_0<<24);
+                # print "imm12_9_8 == 11\n";
+            }
+            else{
+                #   printf("Error Pattern found in \$imm12_9_8 = %x\n",$imm12_9_8);
+            }
+        }else{
+            $imm32 = ($imm12_6_0 | 0b0000_1000_0000)<<(($imm12 & 0b1111_1000_0000)>>7);
+            #print "imm12_11_10 != 00, ROR_C\n";
+        }
+
+        printf( "emu:rn=[%d]\trm=[XX]\trd=[%d]\timm32=[%x]\tshift_or_not=[0]\tthumb_or_not=[1]\timm_or_reg=[1]\n",$rn,$rd,$imm32);
 
         $loop_cnt++;
         $i    = $loop_cnt%2;
@@ -151,9 +174,12 @@ foreach (@pattern_1){
     }
 
 }
+
+
 ###################################################################
 #T e s t    I n s t r u c t i o n   F o r   P a t t e r n   2
 ###################################################################
+
 foreach (@pattern_2){
     $rd     = 0b0;
     $rn     = 0b1;
@@ -169,21 +195,10 @@ foreach (@pattern_2){
         $p_Rd   = $rd<<8;
         $p_imm8 = $imm8;
 
-
-#        printf( "\$p_i    =%d\t\$i      =%d\n",$p_i,$i);
-#        printf( "\$p_Rn   =%d\t\$rn     =%d\n",$p_Rn,$rn);
-#        printf( "\$p_imm3 =%d\t\$imm3   =%d\n",$p_imm3,$imm3);
-#        printf( "\$p_Rd   =%d\t\$rd     =%d\n", $p_Rd,$rd);
-#        printf( "\$p_imm8 =%d\t\$imm8   =%d\n",$p_imm8,$imm8);
-#        print "*******************************\n";
-
         $inst[$pc++] = $_ | $p_i | $p_Rn | $p_imm3 | $p_Rd | $p_imm8;
-
-        printf( "i=%d\n",$i);                      
-        printf( "rn=%d\n",$rn);
-        printf( "imm3=%d\n",$imm3);
-        printf( "rd=%d\n",$rd);         
-        printf( "imm8=%d\n",$imm8);
+        $imm32  = ($i<<11) | ($imm3<<8) | $imm8;
+        
+        printf( "emu:rn=[%d]\trm=[XX]\trd=[%d]\timm32=[%x]\tshift_or_not=[0]\tthumb_or_not=[0]\timm_or_reg=[1]\n",$rn,$rd,$imm32);
 
         $loop_cnt++;
         $i    = $loop_cnt%2;
@@ -216,22 +231,10 @@ foreach (@pattern_3){
         $p_imm2 = $imm2<<6;
         $p_Rm   = $rm;
 
-
-#        printf( "\$p_i    =%d\t\$i      =%d\n",$p_i,$i);
-#        printf( "\$p_Rn   =%d\t\$rn     =%d\n",$p_Rn,$rn);
-#        printf( "\$p_imm3 =%d\t\$imm3   =%d\n",$p_imm3,$imm3);
-#        printf( "\$p_Rd   =%d\t\$rd     =%d\n", $p_Rd,$rd);
-#        printf( "\$p_imm8 =%d\t\$imm8   =%d\n",$p_imm8,$imm8);
-#        print "*******************************\n";
-
         $inst[$pc++] = $_ | $p_s_type | $p_Rm | $p_Rn | $p_imm3 | $p_Rd | $p_imm2;
-
-        printf( "s_type=%d\n",$s_type);                      
-        printf( "rn=%d\n",$rn);
-        printf( "imm3=%d\n",$imm3);
-        printf( "rd=%d\n",$rd);         
-        printf( "imm2=%d\n",$imm2);
-        printf( "rm=%d\n",$rm);
+my      $offset      = ($imm3<<2) | $imm2;
+        printf( "emu:rn=[%d]\trm=[%d]\trd=[%d]\timm32=[xxxx]\tshift_or_not=[1]\tthumb_or_not=[0]\timm_or_reg=[0]\n",$rn,$rm,$rd);
+        printf( "emu:s_type=[%b]\toffset=[%d]\n",$s_type,$offset);
 
         $loop_cnt++;
 
@@ -259,19 +262,10 @@ foreach (@pattern_4){
         $p_Rdn   = $rdn;
         $p_Rm   = $rm<<3;
 
-
-#        printf( "\$p_i    =%d\t\$i      =%d\n",$p_i,$i);
-#        printf( "\$p_Rn   =%d\t\$rn     =%d\n",$p_Rn,$rn);
-#        printf( "\$p_imm3 =%d\t\$imm3   =%d\n",$p_imm3,$imm3);
-#        printf( "\$p_Rd   =%d\t\$rd     =%d\n", $p_Rd,$rd);
-#        printf( "\$p_imm8 =%d\t\$imm8   =%d\n",$p_imm8,$imm8);
-#        print "*******************************\n";
-
         $inst[$pc++] = $_ | $p_Rm | $p_Rdn;
 
-        printf( "rdn=%d\n",$rdn);
-        printf( "rm=%d\n",$rm);
-
+        printf( "emu:rn=[%d]\trm=[%d]\trd=[%d]\timm32=[xxxx]\tshift_or_not=[0]\tthumb_or_not=[0]\timm_or_reg=[0]\n",$rdn,$rm,$rdn);
+        
         $loop_cnt++;
 
         $rdn   = $rdn < (1<<3) -1  ? $rdn+1 : 0x00000000;
@@ -294,26 +288,16 @@ foreach (@pattern_5){
         $p_imm3 = $imm3<<6;
         $p_Rd   = $rd;
 
-
-#        printf( "\$p_i    =%d\t\$i      =%d\n",$p_i,$i);
-#        printf( "\$p_Rn   =%d\t\$rn     =%d\n",$p_Rn,$rn);
-#        printf( "\$p_imm3 =%d\t\$imm3   =%d\n",$p_imm3,$imm3);
-#        printf( "\$p_Rd   =%d\t\$rd     =%d\n", $p_Rd,$rd);
-#        printf( "\$p_imm8 =%d\t\$imm8   =%d\n",$p_imm8,$imm8);
-#        print "*******************************\n";
-
         $inst[$pc++] = $_ | $p_Rn | $p_imm3 | $p_Rd;
+        $imm32 = $imm3;
 
-        printf( "rn=%d\n",$rn);
-        printf( "imm3=%d\n",$imm3);
-        printf( "rd=%d\n",$rd);
+        printf( "emu:rn=[%d]\trm=[XX]\trd=[%d]\timm32=[%x]\tshift_or_not=[0]\tthumb_or_not=[0]\timm_or_reg=[1]\n",$rn,$rd,$imm32);
 
         $loop_cnt++;
 
         $rn   = $rn < (1<<3) -1  ? $rn+1 : 0x00000000;
         $rd   = $rd < (1<<3) -1  ? $rd+1 : 0x00000000;
         $imm3   = $imm3 < (1<<3) -1  ? $imm3+1 : 0x00000000;
-
     }
 
 }
@@ -330,19 +314,11 @@ foreach (@pattern_6){
         $p_Rdn   = $rdn<<8;
         $p_imm8 = $imm8;
 
-
-#        printf( "\$p_i    =%d\t\$i      =%d\n",$p_i,$i);
-#        printf( "\$p_Rn   =%d\t\$rn     =%d\n",$p_Rn,$rn);
-#        printf( "\$p_imm3 =%d\t\$imm3   =%d\n",$p_imm3,$imm3);
-#        printf( "\$p_Rd   =%d\t\$rd     =%d\n", $p_Rd,$rd);
-#        printf( "\$p_imm8 =%d\t\$imm8   =%d\n",$p_imm8,$imm8);
-#        print "*******************************\n";
-
         $inst[$pc++] = $_ | $p_Rdn | $p_imm8;
+        $imm32 = $imm8;
 
-        printf( "rdn=%d\n",$rdn);
-        printf( "imm8=%d\n",$imm8);
-
+        printf( "emu:rn=[%d]\trm=[XX]\trd=[%d]\timm32=[%x]\tshift_or_not=[0]\tthumb_or_not=[0]\timm_or_reg=[1]\n",$rdn,$rdn,$imm32);
+        
         $loop_cnt++;
 
         $rdn   = $rdn < (1<<3) -1  ? $rdn+1 : 0x00000000;
@@ -363,17 +339,10 @@ foreach (@pattern_7){
     while($loop_cnt < (1<<7)){
         $p_imm7 = $imm7;
 
-
-#        printf( "\$p_i    =%d\t\$i      =%d\n",$p_i,$i);
-#        printf( "\$p_Rn   =%d\t\$rn     =%d\n",$p_Rn,$rn);
-#        printf( "\$p_imm3 =%d\t\$imm3   =%d\n",$p_imm3,$imm3);
-#        printf( "\$p_Rd   =%d\t\$rd     =%d\n", $p_Rd,$rd);
-#        printf( "\$p_imm8 =%d\t\$imm8   =%d\n",$p_imm8,$imm8);
-#        print "*******************************\n";
-
         $inst[$pc++] = $_ | $p_imm7;
+        $imm32 = $imm7<<2;
 
-        printf( "imm7=%d\n",$imm7);
+        printf( "emu:rn=[XX]\trm=[XX]\trd=[XX]\timm32=[%x]\tshift_or_not=[0]\tthumb_or_not=[0]\timm_or_reg=[1]\n",$imm32);
 
         $loop_cnt++;
 
@@ -397,18 +366,9 @@ foreach (@pattern_8){
         $p_Rn = $rn<<3;
         $p_Rd = $rd;
 
-#        printf( "\$p_i    =%d\t\$i      =%d\n",$p_i,$i);
-#        printf( "\$p_Rn   =%d\t\$rn     =%d\n",$p_Rn,$rn);
-#        printf( "\$p_imm3 =%d\t\$imm3   =%d\n",$p_imm3,$imm3);
-#        printf( "\$p_Rd   =%d\t\$rd     =%d\n", $p_Rd,$rd);
-#        printf( "\$p_imm8 =%d\t\$imm8   =%d\n",$p_imm8,$imm8);
-#        print "*******************************\n";
-
         $inst[$pc++] = $_ | $p_Rm | $p_Rn | $p_Rd;
 
-        printf( "rm=%d\n",$rm);
-        printf( "rn=%d\n",$rn);
-        printf( "rd=%d\n",$rd);
+        printf( "emu:rn=[%d]\trm=[%d]\trd=[%d]\timm32=[XX]\tshift_or_not=[0]\tthumb_or_not=[0]\timm_or_reg=[0]\n",$rn,$rm,$rd);
 
         $loop_cnt++;
 
@@ -432,25 +392,15 @@ foreach (@pattern_9){
         $p_Rdm = $rdm;
         $p_DM = $dm<<7;
 
-#        printf( "\$p_i    =%d\t\$i      =%d\n",$p_i,$i);
-#        printf( "\$p_Rn   =%d\t\$rn     =%d\n",$p_Rn,$rn);
-#        printf( "\$p_imm3 =%d\t\$imm3   =%d\n",$p_imm3,$imm3);
-#        printf( "\$p_Rd   =%d\t\$rd     =%d\n", $p_Rd,$rd);
-#        printf( "\$p_imm8 =%d\t\$imm8   =%d\n",$p_imm8,$imm8);
-#        print "*******************************\n";
-
         $inst[$pc++] = $_ | $p_Rdm | $p_DM;
 
-        printf( "rdm=%d\n",$rdm);
-        printf( "dm=%d\n",$dm);
+        printf( "emu:rn=[XX]\trm=[%d]\trd=[%d]\timm32=[XX]\tshift_or_not=[0]\tthumb_or_not=[0]\timm_or_reg=[0]\n",$rdm,$rdm);
 
         $loop_cnt++;
 
         $rdm   = $rdm < (1<<3) -1  ? $rdm+1 : 0x00000000;
         $dm   = $loop_cnt%2  ? 0b0 : 0b1;
-
     }
-
 }
 
 sub flprint{
@@ -471,30 +421,26 @@ sub flprint{
     printf("%x", $digit);
     print $end;
 }
-
 my $addr=0;
+my $num_of_inst=0;
 foreach (@inst){
-my $base = BASE;
+    $num_of_inst++;
 
+    my $base = BASE;
     my $len = 1;
     while( ($_/$base)>=1 ){
         $base *=16;
         $len++;
     }
     if($len > 4){
-    
-    printf( "@%x ",$addr++);
-#    $addr++;
-    printf("%x\n", $_/(1<<16));
-    printf("@%x ",$addr++);
-#    $addr++;
-    printf("%x\n",$_%(1<<16));
-    next;
+        printf( "@%x ",$addr++);
+        printf("%x\n", $_/(1<<16));
+        printf("@%x ",$addr++);
+        printf("%x\n",$_%(1<<16));
+        next;
     }
- 
     printf( "@%x ",$addr++);
-#    flprint($addr,BASE, ADDR_LEN," ");
-#    $addr++;
-#    flprint($_,BASE,INST_LEN,"\n");
     printf("%x\n",$_);
 }
+
+print "Num of inst $num_of_inst\n";
