@@ -3,7 +3,7 @@
 # Author:           Xiao,Chang
 # Email:            chngxiao@gmail.com
 # Original Date:    9/20/2011
-# Last Modified:    9/21/2011
+# Last Modified:    9/22/2011
 # Description:      Test tool used to verify that the output signal pattern of stage Two in the pipe line are correct.
 # Copyright:        All right reserved by Xiao,Chang.
 # Notice: Please do me a favor to NOT remove the content above. 
@@ -29,6 +29,8 @@ foreach $sim_line (<STAGE_2_OUTPUT_SIM>){
 
     chomp $sim_line;
     $emu_line = <STAGE_2_OUTPUT_EMU>;
+    chomp $emu_line;
+
    if(not defined $emu_line){
    printf STDERR ("\$emu_line found uninitialized!\n");
    exit;

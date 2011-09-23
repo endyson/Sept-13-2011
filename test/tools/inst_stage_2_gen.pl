@@ -442,5 +442,3 @@ foreach (@inst){
     printf( "@%x ",$addr++);
     printf("%x\n",$_);
 }
-
-print "Num of inst $num_of_inst\n";

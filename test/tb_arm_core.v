@@ -18,7 +18,9 @@
 
  module tb_arm_core;
 
- parameter ADDR_END=9*256 + 3*16 + 4*16 + 9*256;
+ //Set Instruction Memory depth to 1 MB for test
+ parameter MEM_DEPTH=(1<<20);
+
  integer fd_stage_one;
  integer fd_stage_two;
 
@@ -28,7 +30,7 @@
  reg rst;
  reg [31:0] pc;
 
- reg [15:0] inst_mem[ADDR_END + 100 : 0];
+ reg [15:0] inst_mem[MEM_DEPTH : 0];
  reg[4:0] en_apsr_reg;
  reg en_ipsr_reg;
 
@@ -160,8 +162,15 @@ always @ (posedge clk)begin
 ///////////////////////////////////////////////////////////////
 //T e r m i n a t i o n
 ///////////////////////////////////////////////////////////////
+reg [31:0] inst_depth[1:0];
+
+initial begin
+    $readmemh("inst_depth.dat",inst_depth);
+end
+
 always @ (posedge clk)begin
-    if(pc == ADDR_END) $finish;
+    if(pc >= inst_depth[0] || inst_depth[0] > MEM_DEPTH+1) $finish;
+
 end
 
 /************************************S t a g e      O n e       A s s e r t i o n*****************************************/
