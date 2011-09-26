@@ -29,6 +29,10 @@ all_stage_verify:stage_1_verify stage_2_verify
 build_test: inst_depth_chk
 	@echo "Building tb_arm_core testbench"
 	@cd ${LOG_DIR} && ${VCS} ${VCS_OPT} -P ${VERDI_TAB} ${VERDI_PLI} -psl ${TEST_DIR}/tb_arm_core.v  ${PSL_DIR}/xpsr_reg.psl
+thumb_expand_imm:
+	@echo "Building tb_thumb_expand_imm testbench"
+	@cd ${LOG_DIR} && ${VCS} ${VCS_OPT} ${TEST_DIR}/tb_thumb_expand_imm.v
+
 
 stage_1:stage_1_gen build_test run stage_1_verify
 stage_2:stage_2_gen build_test run all_stage_verify

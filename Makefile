@@ -17,6 +17,8 @@ it:build_tree stage_1
 
 dec:build_tree stage_2
 
+thumb_expand:build_tree thumb_expand_imm run
+
 clean:
 	@echo "Cleaned up!"
 	@rm -rf ${OUT_DIR}

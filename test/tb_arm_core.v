@@ -132,7 +132,8 @@ wire [31:0] op2 = u_arm_core.oprand2;
 wire imm_or_reg = u_arm_core.imm_or_reg;
 wire shift_or_not = u_arm_core.shift_or_not;
 wire thumb_or_not = u_arm_core.thumb_or_not;
-
+wire [11:0] imm12 = u_arm_core.imm12;
+wire [31:0] inst_stage_2 = u_arm_core.inst_stage_2;
 //Sync the inst_valid signals to second stage for test purpose only
 //Used to control the $display task to print out the valid output signals at
 //stage two.
@@ -152,10 +153,10 @@ always @ (posedge clk)begin
     $fdisplay(fd_ex,"num_of_inst = %d", num_of_inst);
 end
 
-always @ (posedge clk)begin
+always @ (inst_valid_stage_2)begin
     if(inst_valid_stage_2)begin
-  #1   $fdisplay(fd_stage_two,"Rn_A=%h\tRm_A=%h\tRd_A=%h\tRn_D=%h\tRm_D=%h\tRd_D=%h\timm_or_reg=%b\tshift_or_not=%b\tthumb_or_not=%b\top1=%h\top2=%h",
-                rn_addr,rm_addr,rd_addr,rn_data,rm_data,rd_data,imm_or_reg,shift_or_not,thumb_or_not,op1,op2);
+  #1   $fdisplay(fd_stage_two,"Rn_A=%h\tRm_A=%h\tRd_A=%h\tRn_D=%h\tRm_D=%h\tRd_D=%h\timm_or_reg=%b\tshift_or_not=%b\tthumb_or_not=%b\top1=%h\top2=%h\timm12=%h\tinst_stage_2=%h",
+                rn_addr,rm_addr,rd_addr,rn_data,rm_data,rd_data,imm_or_reg,shift_or_not,thumb_or_not,op1,op2,imm12,inst_stage_2);
         end
     end
 

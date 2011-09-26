@@ -68,6 +68,15 @@ always @(posedge clk)begin
 end
 endmodule
 
+module reg_32(
+    input [31:0]in,
+    input clk,
+    output reg [31:0]out);
+always @(posedge clk)begin
+    out <= in;
+end
+endmodule
+
 module reg_32_en(
     input [31:0]in,
     input clk,

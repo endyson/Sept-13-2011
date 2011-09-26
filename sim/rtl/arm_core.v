@@ -92,8 +92,11 @@ wire [31:0] oprand1,oprand2;
 wire [11:0] imm12;
 wire [31:0] thumb_imm32;
 wire [31:0] zero_expand_imm32;
+wire [31:0] inst_stage_2;
 
-inst_pattern_match  u_inst_pattern_match(inst, clk, cur_carry, rd_addr, rn_addr, rm_addr, imm_or_reg, shift_or_not,thumb_or_not, zero_expand_imm32,imm12, s_type, s_offset);
+reg_32          u_stage_2_reg_32(inst,clk,inst_stage_2);
+
+inst_pattern_match  u_inst_pattern_match(inst_stage_2, cur_carry, rd_addr, rn_addr, rm_addr, imm_or_reg, shift_or_not,thumb_or_not, zero_expand_imm32,imm12, s_type, s_offset);
 reg_file            u_reg_file(rn_addr, rm_addr, rd_addr, rf_w_en, clk, rn_data, rm_data, rd_data);
 shift               u_shift(s_type, s_offset, rn_data, cur_carry, shifted_rn_data, next_carry);
 thumb_expand_imm    u_thumb_expand_imm(imm12, cur_carry, thumb_imm32, next_carry);

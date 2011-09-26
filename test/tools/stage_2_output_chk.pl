@@ -3,7 +3,6 @@
 # Author:           Xiao,Chang
 # Email:            chngxiao@gmail.com
 # Original Date:    9/20/2011
-# Last Modified:    9/22/2011
 # Description:      Test tool used to verify that the output signal pattern of stage Two in the pipe line are correct.
 # Copyright:        All right reserved by Xiao,Chang.
 # Notice: Please do me a favor to NOT remove the content above. 
@@ -54,14 +53,15 @@ my        $op2_sim = $11;
         exit;
     }
 
-        $emu_line =~ /emu:rn=\[([\dA-Z]{1,2})\]\srm=\[([\dA-Z]{1,2})\]\srd=\[([\dA-Z]{1,2})\]\simm32=\[([\dA-Z]{1,})\]\sshift_or_not=\[(.)\]\sthumb_or_not=\[(.)\]\simm_or_reg=\[(.)\]/;
+        $emu_line =~ /emu:rn=\[(.)\]\srm=\[(.)\]\srd=\[(.)\]\sshift_or_not=\[(.)\]\sthumb_or_not=\[(.)\]\simm_or_reg=\[(.)\]\simm32=\[(........)\]/;
 my      $rn_addr_emu    = $1;
 my      $rm_addr_emu    = $2;
 my      $rd_addr_emu    = $3;
-my      $imm32_emu      = $4;
-my      $shift_or_not_emu   = $5;
-my      $thumb_or_not_emu   = $6;
-my      $imm_or_reg_emu     = $7;
+my      $shift_or_not_emu   = $4;
+my      $thumb_or_not_emu   = $5;
+my      $imm_or_reg_emu     = $6;
+my      $imm32_emu      = $7;
+
         if($shift_or_not_emu eq "1"){
            $emu_line = <STAGE_2_OUTPUT_EMU>;
            $emu_line =~ /emu:s_type=(..)\soffset=(.....)/;
@@ -77,35 +77,47 @@ my      $imm_or_reg_emu     = $7;
 if(not defined $rn_addr_emu){
         printf STDERR ("\$rn_addr_emu found not initialized at line $loop_cnt_emu\n");
     }
-if($rn_addr_sim ne $rn_addr_emu && $rn_addr_emu ne "XX"){
+if($rn_addr_sim ne $rn_addr_emu && $rn_addr_emu ne "X"){
 printf STDERR ("CHECK FAILED:$sim_line line:$loop_cnt_sim\n");
 printf STDERR ("EMU:$emu_line line:$loop_cnt_emu\n");
+print("*************************************\n");
 print("FAILED:$sim_line line:$loop_cnt_sim\n");
 print("EMU:$emu_line line:$loop_cnt_emu\n");
+print("rn_sim=$rn_addr_sim,rn_emu=$rn_addr_emu\n");
+
 }
-elsif($rd_addr_sim ne $rd_addr_emu && $rd_addr_emu ne "XX"){
+elsif($rd_addr_sim ne $rd_addr_emu && $rd_addr_emu ne "X"){
 printf STDERR ("CHECK FAILED:$sim_line line:$loop_cnt_sim\n");
 printf STDERR ("EMU:$emu_line line:$loop_cnt_emu\n");
+print("************************************\n");
 print("FAILED:$sim_line line:$loop_cnt_sim\n");
 print("EMU:$emu_line line:$loop_cnt_emu\n");
+print("rd_sim=$rd_addr_sim,rd_emu=$rd_addr_emu\n");
 }
-elsif($rm_addr_sim ne $rm_addr_emu && $rm_addr_emu ne "XX"){
+elsif($rm_addr_sim ne $rm_addr_emu && $rm_addr_emu ne "X"){
 printf STDERR ("CHECK FAILED:$sim_line line:$loop_cnt_sim\n");
 printf STDERR ("EMU:$emu_line line:$loop_cnt_emu\n");
+print("*************************************\n");
 print("FAILED:$sim_line line:$loop_cnt_sim\n");
 print("EMU:$emu_line line:$loop_cnt_emu\n");
+print("rm_sim=$rm_addr_sim,rm_emu=$rm_addr_emu\n");
+
 }
 elsif($shift_or_not_sim ne $shift_or_not_emu || $imm_or_reg_emu ne $imm_or_reg_sim || $thumb_or_not_sim ne $thumb_or_not_emu){
 printf STDERR ("CHECK FAILED:$sim_line line:$loop_cnt_sim\n");
 printf STDERR ("EMU:$emu_line line:$loop_cnt_emu\n");
+print("*************************************\n");
 print("FAILED:$sim_line line:$loop_cnt_sim\n");
 print("EMU:$emu_line line:$loop_cnt_emu\n");
+print("shift_or_not_sim=$shift_or_not_sim,shift_or_not_emu=$shift_or_not_emu,imm_or_reg_sim=$imm_or_reg_sim,imm_or_reg_emu=$imm_or_reg_emu,thumb_or_not_sim=$thumb_or_not_sim,thumb_or_not_emu=$thumb_or_not_emu\n");
 }
 elsif($imm_or_reg_sim eq "1" && $imm_or_reg_emu eq "1" && $op2_sim ne $imm32_emu){
 printf STDERR ("CHECK FAILED:$sim_line line:$loop_cnt_sim\n");
 printf STDERR ("EMU:$emu_line line:$loop_cnt_emu\n");
+print("*************************************\n");
 print("FAILED:$sim_line line:$loop_cnt_sim\n");
 print("EMU:$emu_line line:$loop_cnt_emu\n");
+print("imm_or_reg_sim=$imm_or_reg_sim,imm_or_reg_emu=$imm_or_reg_emu,op2_sim=$op2_sim,imm32_emu=$imm32_emu\n");
 }
 else{
 print "$loop_cnt_sim Check Passed!\n";
