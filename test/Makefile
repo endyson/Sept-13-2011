@@ -33,6 +33,9 @@ thumb_expand_imm:
 	@echo "Building tb_thumb_expand_imm testbench"
 	@cd ${LOG_DIR} && ${VCS} ${VCS_OPT} ${TEST_DIR}/tb_thumb_expand_imm.v
 
+tb_reg_file:
+	@echo "Building tb_reg_file testbench"
+	@echo ${LOG_DIR} && ${VCS} ${VCS_OPT} ${TEST_DIR}/tb_reg_file.v
 
 stage_1:stage_1_gen build_test run stage_1_verify
 stage_2:stage_2_gen build_test run all_stage_verify

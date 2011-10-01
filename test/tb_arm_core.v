@@ -3,7 +3,6 @@
 * Author:          Xiao,Chang
 * Email:           chngxiao@gmail.com
 * Original Date:   9/14/2011 
-* Last Modified:   9/14/2011
 * Description:     Test bench for the top level arm_core module
 * Copyright:       All right reserved by Xiao Chang
 * Notice:          Please do me a favor to NOT remove the content above
@@ -97,15 +96,6 @@ initial begin
     $fsdbDumpvars();
 end
 
-//Register Initialization
-wire [31:0]reg_out=u_arm_core.u_reg_file.regfile[1].u_reg_32_x.out;
-/*
-initial begin
-integer i;
-    for(i=0; i<16; i++)
-       $readmemh("./reg_file_ini.dat",u_arm_core.u_reg_file.regfile[i].u_reg_32_x.out);
-end
-*/
 //////////////////////////////////////////////////////////////
 //S t a g e      O n e       L o g g i n g
 //////////////////////////////////////////////////////////////

@@ -5,3 +5,7 @@ sim/rtl/pre_dec.v
 sim/rtl/xpsr_reg.v
 sim/rtl/reg.v
 sim/rtl/mux.v
+sim/rtl/inst_pattern_match.v
+sim/rtl/thumb_expand_imm.v
+sim/rtl/reg_file.v
+sim/rtl/shift.v

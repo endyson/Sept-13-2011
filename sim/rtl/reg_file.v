@@ -21,10 +21,10 @@ input [3:0] rm_addr,
 input [3:0] rd_addr,
 input w_en,
 input clk,
+input [31:0] rd_data,
 
 output [31:0] rn_data,
-output [31:0] rm_data,
-output [31:0] rd_data
+output [31:0] rm_data
 );
 
 reg [15:0]en_reg_x;
