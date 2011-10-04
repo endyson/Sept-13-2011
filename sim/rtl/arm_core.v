@@ -77,7 +77,7 @@ pre_dec     u_pre_dec(inst_w, cond,apsr,in_it_blk, inst, en_epsr,it_status);
 
 wire cur_carry  =   apsr[2];
 wire next_carry;
-wire [3:0]rd_addr, rn_addr, rm_addr;
+wire [3:0]rd_addr,rd2_addr, rn_addr, rm_addr;
 wire imm_or_reg;
 wire shift_or_not;
 wire thumb_or_not;
@@ -93,10 +93,11 @@ wire [11:0] imm12;
 wire [31:0] thumb_imm32;
 wire [31:0] zero_expand_imm32;
 wire [31:0] inst_stage_2;
-
+wire index,add,wback;
+wire [15:0] reg_mask;
 reg_32          u_stage_2_reg_32(inst,clk,inst_stage_2);
 
-inst_pattern_match  u_inst_pattern_match(inst_stage_2, cur_carry, rd_addr, rn_addr, rm_addr, imm_or_reg, shift_or_not,thumb_or_not, zero_expand_imm32,imm12, s_type, s_offset);
+inst_pattern_match  u_inst_pattern_match(inst_stage_2, cur_carry, rd_addr,rd2_addr, rn_addr, rm_addr, imm_or_reg, shift_or_not,thumb_or_not, zero_expand_imm32,imm12, s_type, s_offset,index,add,wback,reg_mask);
 reg_file            u_reg_file(rn_addr, rm_addr, rd_addr, rf_w_en, clk, rn_data, rm_data, rd_data);
 shift               u_shift(s_type, s_offset, rn_data, cur_carry, shifted_rn_data, next_carry);
 thumb_expand_imm    u_thumb_expand_imm(imm12, cur_carry, thumb_imm32, next_carry);
