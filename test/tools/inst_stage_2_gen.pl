@@ -4,11 +4,7 @@
 #   Date:           9/22/2011
 #   Version:        0.0
 #   File:           inst_stage_2_gen.pl
-#   Description:    Test the xPSR register funcition including:
-#                   a>  IT mask pattern left shift increment. 
-#                   b>  16 to 32 and 32 to 16 bits instruction switch within IT block.
-#                   c>  Instruction execution inside and outside IT block.
-#                   d>  Branch instrution conditional pass.
+#   Description:    Generate the test instructions and the expected outcome of second stage.
 #   
 ##########################################################################################
 use strict;
@@ -54,6 +50,47 @@ my @inst_name_pattern_2=(
 #"ADR T3"
 );
 
+my @pattern_10 = (
+0xf8500800,#LDR(imm) T4
+0xf8100800,#LDRB(imm) T3
+#0xf8100e00,#LDRBT
+0xf8300800,#LDRH(imm) T3
+0xf9100800,#LDRSB(imm) T2
+0xf9300800 #LDRSH(imm) T2
+);
+my @inst_name_pattern_10 = (
+"LDR(imm) T4",
+"LDRB(imm) T3",
+"LDRH(imm) T3",
+"LDRSB(imm) T2",
+"LDRSH(imm) T2"
+);
+
+my @pattern_11 = (
+0xe8500000,#LDRD(imm)
+0xe85f0000,#LDRD(literal)
+0xe8500f00,#LDREX
+0xe8d00f4f,#LDREXB
+0xe8d00f5f,#LDREXH
+0xf8300e00,#LDRHT
+0xf9100e00,#LDRSBT
+0xf9300e00,#LDRSHT
+0xf8500e00 #LDRT
+);
+
+my @inst_name_pattern_11 = (
+"LDRD(imm)",
+"LDRD(literal)",
+"LDREX",
+"LDREXB",
+"LDREXH",
+"LDRHT",
+"LDRSBT",
+"LDRSHT",
+"LDRT"
+
+);
+
 my @pattern_3 = (
     0xeb400000, #ADC(reg) T2
     0xeb000000 #ADD(reg) T3
@@ -67,6 +104,58 @@ my @inst_name_pattern_3=(
 # "ADD(SP reg) T3"
 );
 
+my @pattern_12 = (
+0xf8500000,#LDR(reg) T2
+0xf8100000,#LDRB(reg) T2
+0xf8300000,#LDRH(reg) T2
+0xf9100000,#LDRSB(reg) T2
+0xf9300000 #LDRSH(reg) T2
+);
+
+my @inst_name_pattern_12 = (
+"LDR(reg) T2",
+"LDRB(reg) T2",
+"LDRH(reg) T2",
+"LDRSB(reg) T2",
+"LDRSH(reg) T2"
+);
+my @pattern_13 = (
+0xe8900000,#LDM/LDMIA/LDMFD T2
+0xe9100000 #LDMDB/LDMEA
+);
+
+my @inst_name_pattern_13 = (
+"LDM/LDMIA/LDMFD",
+"LDMDB/LDMEA"
+
+);
+
+my @pattern_14 = (
+0xf8d00000,#LDR(imm) T3
+0xf85f0000,#LDR(literal) T2
+0xf8900000,#LDRB(imm) T2
+0xf81f0000,#LDRB(literal) T1
+0xf8b00000,#LDRH(imm) T2
+0xf83f0000,#LDRH(literal)
+0xf9900000,#LDRSB(imm) T1
+0xf91f0000,#LDRSB(literal)
+0xf9b00000,#LDRSH(imm) T1
+0xf93f0000 #LDRSH(literal)
+);
+
+my @inst_name_pattern_14 = (
+"LDR(imm) T3",
+"LDR(literal) T2",
+"LDRB(imm) T2",
+"LDRB(literal) T1",
+"LDRH(imm) T2",
+"LDRH(literal)",
+"LDRSB(imm) T1",
+"LDRSB(literal)",
+"LDRSH(imm) T1",
+"LDRSH(literal)"
+
+);
 my @pattern_4 = (
     0x4140 #ADC(reg) T1
 
@@ -75,6 +164,37 @@ my @pattern_4 = (
 my @inst_name_pattern_4=(
 "ADC(reg) T1"
 );
+
+
+my @pattern_9 = (
+    0x4400 #ADD(reg) T2
+#    0x4468, #ADD(SP reg) T1
+#    0x4485, #ADD(SP reg) T2
+);
+my @inst_name_pattern_9=(
+"ADD(reg) T2"
+#"ADD(SP reg) T1",
+#"ADD(SP reg) T2"
+);
+
+
+my @pattern_8 = (
+    0x1800,#ADD(reg) T1
+    0x5800,#LDR(reg) T1
+    0x5c00,#LDRB(reg) T1
+    0x5a00,#LDRH(reg)
+    0x5600,#LDRSB(reg) T1
+    0x5e00 #LDRSH(reg) T1
+);
+my @inst_name_pattern_8=(
+"ADD(reg) T1",
+"LDR(reg) T1",
+"LDRB(reg) T1",
+"LDRH(reg)",
+"LDRSB(reg) T1",
+"LDRSH(reg) T1"
+);
+
 
 my @pattern_5 = (
     0x1c00 #ADD(imm) T1
@@ -88,40 +208,47 @@ my @inst_name_pattern_5=(
 my @pattern_6 = (
     0x3000, #ADD(imm) T2
     0xa800, #ADD(SP imm) T1
-    0xa000  #ADR T1
+    0xa000, #ADR T1
+    0x9800, #LDR(imm) T2
+    0x4800 #LDR(literal) T1
 );
 
 my @inst_name_pattern_6=(
 "ADD(imm) T2",
 "ADD(SP imm) T1",
-"ADR T1"
+"ADR T1",
+"LDR(imm) T2",
+"LDR(literal) T1"
+
 );
 
 my @pattern_7 = (
-    0xb000 #ADD(SP plus imm) T2
+    0xb000 #ADD(SP imm) T2
 );
 
 my @inst_name_pattern_7=(
 "ADD(SP imm)"
 );
 
-my @pattern_8 = (
-    0x1800 #ADD(reg) T1
+
+my @pattern_15 = (
+    0xc800 #LDM/LDMIA/LDMFD T1
 );
 
-my @inst_name_pattern_8=(
-"ADD(reg) T1"
+my @inst_name_pattern_15 = (
+"LDM/LDMIA/LDMFD T1"
 );
-my @pattern_9 = (
-    0x4400 #ADD(reg) T2
-#    0x4468, #ADD(SP reg) T1
-#    0x4485, #ADD(SP reg) T2
+my @pattern_16 = (
+    0x6800,#LDR(imm) T1
+    0x7800,#LDRB(imm) T1
+    0x8800 #LDRH(imm) T1
 );
 
-my @inst_name_pattern_9=(
-"ADD(reg) T2"
-#"ADD(SP reg) T1",
-#"ADD(SP reg) T2"
+my @inst_name_pattern_16 = (
+"LDR(imm) T1",
+"LDRB(imm) T1",
+"LDRH(imm) T1"
+
 );
 
 #####################
@@ -137,10 +264,20 @@ my $imm8;
 my $imm32;
 my $i;
 my $s_type;
+my $s_offset;
 my $rdm;
 my $rdn;
 my $dm;
-
+my $imm5;
+my $rt;
+my $puw;
+my $pu;
+my $pm;
+my $w;
+my $reg_list;
+my $imm12;
+my $rt2;
+my $u;
 #####################
 #Pattern mask
 #####################
@@ -158,7 +295,16 @@ my $p_imm2;
 my $p_imm7;
 my $p_Rm;
 my $loop_cnt;
-
+my $p_imm5;
+my $p_Rt;
+my $p_U;
+my $p_PUW;
+my $p_PU;
+my $p_W;
+my $p_PM;
+my $p_reg_list;
+my $p_imm12;
+my $p_Rt2;
 ###################################################################
 #T e s t    I n s t r u c t i o n   F o r   P a t t e r n   1
 ###################################################################
@@ -220,6 +366,8 @@ foreach (@pattern_1){
         printf("imm32=[");
         flprint($imm32, BASE,8,"]");
         printf("imm12=[%x]\tcur_inst=[%x]\t",$imm12,$inst[$pc-1]);
+        printf("PUW=[X]\tRt2=[X]\treg_list=[X]\t");
+
         print $inst_name_pattern_1[$index],"\n";
 
         $loop_cnt++;
@@ -265,6 +413,7 @@ else{$inst[$pc++] = $_ | $p_i | $p_Rn | $p_imm3 | $p_Rd | $p_imm8;}
         printf("imm32=[");
         flprint($imm32, BASE,8,"]\t");
         printf "cur_inst=%x\t",$inst[$pc-1];
+        printf("PUW=[X]\tRt2=[X]\treg_list=[X]\t");
         print $inst_name_pattern_2[$index],"\n";
 
         $loop_cnt++;
@@ -301,12 +450,14 @@ foreach (@pattern_3){
         $p_Rm   = $rm;
 
         $inst[$pc++] = $_ | $p_s_type | $p_Rm | $p_Rn | $p_imm3 | $p_Rd | $p_imm2;
-my      $offset      = ($imm3<<2) | $imm2;
+          $s_offset      = ($imm3<<2) | $imm2;
         printf( "emu:rn=[%x]\trm=[%x]\trd=[%x]\tshift_or_not=[1]\tthumb_or_not=[0]\timm_or_reg=[0]\timm32=[xxxxxxxx]\t",$rn,$rm,$rd);
         printf "cur_inst=%x\t",$inst[$pc-1];
+        
+        printf("PUW=[X]\tRt2=[X]\treg_list=[X]\t");
         print $inst_name_pattern_3[$index],"\n";
 
-        printf( "emu:s_type=[%b]\toffset=[%x]\n",$s_type,$offset);
+        printf( "emu:s_type=[%b]\toffset=[%x]\n",$s_type,$s_offset);
                 $loop_cnt++;
 
         $s_type = $s_type <(1<<2) -1 ? $s_type +1 :0b0;
@@ -338,6 +489,8 @@ foreach (@pattern_4){
 
         printf( "emu:rn=[%x]\trm=[%x]\trd=[%x]\timm32=[xxxxxxxx]\tshift_or_not=[0]\tthumb_or_not=[0]\timm_or_reg=[0]\t",$rdn,$rm,$rdn);
         printf "cur_inst=%x\t",$inst[$pc-1];
+        
+        printf("PUW=[X]\tRt2=[X]\treg_list=[X]\t");
         print $inst_name_pattern_4[$index],"\n";
         
         $loop_cnt++;
@@ -372,6 +525,7 @@ foreach (@pattern_5){
         printf("imm32=[");
         flprint($imm32, BASE,8,"]\t");
         printf "cur_inst=%x\t",$inst[$pc-1];
+        printf("PUW=[X]\tRt2=[X]\treg_list=[X]\t");
         print $inst_name_pattern_5[$index],"\n";
 
         $loop_cnt++;
@@ -404,6 +558,7 @@ foreach (@pattern_6){
         printf("imm32=[");
         flprint($imm32, BASE,8,"]\t");
         printf "cur_inst=%x\t",$inst[$pc-1];
+        printf("PUW=[X]\tRt2=[X]\treg_list=[X]\t");
         print $inst_name_pattern_6[$index],"\n";
 
         $loop_cnt++;
@@ -435,6 +590,7 @@ foreach (@pattern_7){
         printf("imm32=[");
         flprint($imm32, BASE,8,"]\t");
         printf "cur_inst=%x\t",$inst[$pc-1];
+        printf("PUW=[X]\tRt2=[X]\treg_list=[X]\t");
         print $inst_name_pattern_7[$index],"\n";
 
         $loop_cnt++;
@@ -465,6 +621,7 @@ foreach (@pattern_8){
 
         printf( "emu:rn=[%x]\trm=[%x]\trd=[%x]\timm32=[X]\tshift_or_not=[0]\tthumb_or_not=[0]\timm_or_reg=[0]\t",$rn,$rm,$rd);
         printf "cur_inst=%x\t",$inst[$pc-1];
+        printf("PUW=[X]\tRt2=[X]\treg_list=[X]\t");
 print $inst_name_pattern_8[$index],"\n";
         $loop_cnt++;
 
@@ -496,6 +653,7 @@ foreach (@pattern_9){
         
         printf( "emu:rn=[%x]\trm=[%x]\trd=[%x]\timm32=[X]\tshift_or_not=[0]\tthumb_or_not=[0]\timm_or_reg=[0]\t",$rn,$rdm,$rdm);
         printf "cur_inst=%x\t",$inst[$pc-1];
+        printf("PUW=[X]\tRt2=[X]\treg_list=[X]\t");
         print $inst_name_pattern_9[$index],"\n";
 
 
@@ -506,6 +664,261 @@ foreach (@pattern_9){
         $rn     = $rn <(1<<4)-1 ? $rn+1 : 0;
     }
 $index++;
+}
+###################################################################
+#T e s t    I n s t r u c t i o n   F o r   P a t t e r n   10
+###################################################################
+$index=0;
+
+foreach (@pattern_10){
+    $rn = 0b0;
+    $rt = 0b01;
+    $puw = 0b10;
+    $imm8 = 0b11;
+
+    $loop_cnt = 0;
+    while($loop_cnt < (1<<8)){
+        $p_Rn = $rn<<16;
+        $p_Rt = $rt<<12;
+        $p_PUW  = $puw<<8;
+        $p_imm8 = $imm8;
+
+        $inst[$pc++] = $_ | $p_Rn | $p_Rt| $p_PUW | $p_imm8;
+        
+        printf( "emu:rn=[%x]\trm=[X]\trd=[%x]\timm32=[%x]\tshift_or_not=[0]\tthumb_or_not=[0]\timm_or_reg=[1]\t",$rn,$rt,$imm8);
+        printf "cur_inst=%x\t",$inst[$pc-1];
+        printf("PUW=[%x]\tRt2=[X]\treg_list=[X]\t",$puw);
+        print $inst_name_pattern_10[$index],"\n";
+
+        $loop_cnt++;
+
+        $rn     = $rn <(1<<4)-1 ? $rn+1 : 0;
+        $rt     = $rt <(1<<4)-1 ? $rt+1 : 0;
+        $puw     = $puw <(1<<3)-1 ? $puw+1 : 0;
+        $imm8     = $imm8 <(1<<8)-1 ? $imm8+1 : 0;
+    }
+$index++;
+}
+
+###################################################################
+#T e s t    I n s t r u c t i o n   F o r   P a t t e r n   11
+###################################################################
+$index=0;
+
+foreach (@pattern_11){
+    $w = 0b0;
+    $pu = 0b01;
+    $rn = 0b10;
+    $rt = 0b11;
+    $rt2 = 0b100;
+    $imm8 = 0b101;
+
+    $loop_cnt = 0;
+    while($loop_cnt < (1<<8)){
+        $p_Rn = $rn<<16;
+        $p_Rt = $rt<<12;
+        $p_Rt2 = $rt2<<8;
+
+        $p_PU  = $pu<<23;
+        $p_W = $w<<21;
+        $p_imm8 = $imm8;
+
+        $inst[$pc++] = $_ | $p_Rn | $p_Rt| $p_Rt2 | $p_PU | $p_W | $p_imm8;
+        $puw = ($pu<<1) | $w;
+
+        printf( "emu:rn=[%x]\trm=[X]\trd=[%x]\timm32=[%x]\tshift_or_not=[0]\tthumb_or_not=[0]\timm_or_reg=[1]\t",$rn,$rt,$imm8);
+        printf "cur_inst=%x\t",$inst[$pc-1];
+        printf("PUW=[%x]\tRt2=[%x]\treg_list=[X]\t",$puw,$rt2);
+        print $inst_name_pattern_11[$index],"\n";
+
+        $loop_cnt++;
+
+        $rn = xbit_cnt($rn, 4);
+        $rt = xbit_cnt($rt, 4);
+        $rt2 = xbit_cnt($rt2,4);
+        $imm8 = xbit_cnt($imm8,8);
+        $pu = xbit_cnt($pu,2);
+        $w = xbit_cnt($w, 1);
+
+    }
+$index++;
+}
+
+###################################################################
+#T e s t    I n s t r u c t i o n   F o r   P a t t e r n   12
+###################################################################
+$index=0;
+
+foreach (@pattern_12){
+    $imm2 = 0b0;
+    $rn = 0b1;
+    $rt = 0b10;
+    $rm = 0b11;
+
+    $loop_cnt = 0;
+    while($loop_cnt < (1<<4)){
+        $p_Rn = $rn<<16;
+        $p_Rt = $rt<<12;
+        $p_Rm = $rm;
+        $p_imm2 = $imm2<<4;
+
+        $inst[$pc++] = $_ | $p_Rn | $p_Rt| $p_Rm | $p_imm2;
+
+        printf( "emu:rn=[%x]\trm=[%x]\trd=[%x]\timm32=[X]\tshift_or_not=[1]\tthumb_or_not=[0]\timm_or_reg=[0]\t",$rn,$rm,$rt);
+        printf "cur_inst=%x\t",$inst[$pc-1];
+        printf("PUW=[X]\tRt2=[X]\treg_list=[X]\t");
+        print $inst_name_pattern_12[$index],"\n";
+$s_offset = $imm2;
+    printf( "emu:s_type=[00]\toffset=[%x]\n",$s_offset);
+
+        $loop_cnt++;
+
+        $rn = xbit_cnt($rn, 4);
+        $rt = xbit_cnt($rt, 4);
+        $rm = xbit_cnt($rm,4);
+        $imm2 = xbit_cnt($imm2,2);
+    }
+$index++;
+}
+
+
+###################################################################
+#T e s t    I n s t r u c t i o n   F o r   P a t t e r n   13
+###################################################################
+$index=0;
+
+foreach (@pattern_13){
+    $w = 0b0;
+    $pm = 0b1;
+    $rn = 0b10;
+    $reg_list = 0b11;
+
+    $loop_cnt = 0;
+    while($loop_cnt < (1<<13)){
+        $p_Rn = $rn<<16;
+        $p_W = $w<<21;
+        $p_PM = $pm<<14;
+        $p_reg_list = $reg_list;
+
+        $inst[$pc++] = $_ | $p_Rn | $p_PM| $p_W | $p_reg_list;
+        
+        printf( "emu:rn=[%x]\trm=[X]\trd=[X]\timm32=[X]\tshift_or_not=[0]\tthumb_or_not=[0]\timm_or_reg=[0]\t", $rn );
+        printf "cur_inst=%x\t",$inst[$pc-1];
+        printf("PUW=[001]\tRt2=[X]\treg_list=[%x]\t",(($pm<<1)<<13) | $reg_list );
+        print $inst_name_pattern_13[$index],"\n";
+
+        $loop_cnt++;
+
+        $rn = xbit_cnt($rn, 4);
+        $w = xbit_cnt($w, 1);
+        $pm = xbit_cnt($pm,2);
+        $reg_list = xbit_cnt($reg_list,13);
+    }
+$index++;
+}
+
+###################################################################
+#T e s t    I n s t r u c t i o n   F o r   P a t t e r n   14
+###################################################################
+$index=0;
+
+foreach (@pattern_14){
+    $u = 0b0;
+    $rt = 0b1;
+    $rn = 0b10;
+    $imm12= 0b11;
+
+    $loop_cnt = 0;
+    while($loop_cnt < (1<<12)){
+        $p_Rn = $rn<<16;
+        $p_U = $u<<23;
+        $p_Rt = $rt<<12;
+        $p_imm12 = $imm12;
+
+        $inst[$pc++] = $_ | $p_Rn | $p_U| $p_Rt | $p_imm12;
+        
+        printf( "emu:rn=[%x]\trm=[X]\trd=[%x]\timm32=[%x]\tshift_or_not=[0]\tthumb_or_not=[0]\timm_or_reg=[1]\t",
+            $rn, $rt,$imm12);
+        printf "cur_inst=%x\t",$inst[$pc-1];
+        printf("PUW=[1%b0]\tRt2=[X]\treg_list=[X]\t", $u);
+        print $inst_name_pattern_14[$index],"\n";
+
+        $loop_cnt++;
+
+        $rn = xbit_cnt($rn, 4);
+        $u = xbit_cnt($u, 1);
+        $rt = xbit_cnt($rt,4);
+        $imm12 = xbit_cnt($imm12,12);
+    }
+$index++;
+}
+
+###################################################################
+#T e s t    I n s t r u c t i o n   F o r   P a t t e r n   15
+###################################################################
+$index=0;
+
+foreach (@pattern_15){
+    $rn = 0b0;
+    $reg_list= 0b1;
+
+    $loop_cnt = 0;
+    while($loop_cnt < (1<<8)){
+        $p_Rn = $rn<<24;
+        $p_reg_list = $reg_list<<16;
+
+        $inst[$pc++] = $_ | $p_Rn | $p_reg_list;
+        
+        printf( "emu:rn=[%x]\trm=[X]\trd=[X]\timm32=[X]\tshift_or_not=[0]\tthumb_or_not=[0]\timm_or_reg=[0]\t",
+            $rn);
+        printf "cur_inst=%x\t",$inst[$pc-1];
+        printf("PUW=[00%b]\tRt2=[X]\treg_list=[%x]\t",$reg_list & (1<<$rn) ? 1:0, $reg_list);
+        print $inst_name_pattern_15[$index],"\n";
+
+        $loop_cnt++;
+
+        $rn = xbit_cnt($rn, 3);
+        $reg_list = xbit_cnt($reg_list,8);
+    }
+$index++;
+}
+
+###################################################################
+#T e s t    I n s t r u c t i o n   F o r   P a t t e r n   16
+###################################################################
+$index=0;
+
+foreach (@pattern_16){
+    $rn = 0b0;
+    $rt = 0b1;
+    $imm5= 0b10;
+
+    $loop_cnt = 0;
+    while($loop_cnt < (1<<5)){
+        $p_Rn = $rn<<19;
+        $p_Rt = $rt<<16;
+        $p_imm5 = $imm5<<22;
+
+        $inst[$pc++] = $_ | $p_Rn | $p_imm5 | $p_Rt;
+        
+        printf( "emu:rn=[%x]\trm=[X]\trd=[%x]\timm32=[%x]\tshift_or_not=[0]\tthumb_or_not=[0]\timm_or_reg=[1]\t",
+            $rn,$rt, $imm5);
+        printf "cur_inst=%x\t",$inst[$pc-1];
+        printf("PUW=[110]\tRt2=[X]\treg_list=[X]\t");
+        print $inst_name_pattern_16[$index],"\n";
+
+        $loop_cnt++;
+
+        $rn = xbit_cnt($rn, 3);
+        $rt = xbit_cnt($rt, 3);
+        $imm5 = xbit_cnt($imm5,5);
+    }
+$index++;
+}
+sub xbit_cnt {
+my $cur_cnt = $_[0];
+my $bit_len = $_[1];
+$cur_cnt < (1<<$bit_len)-1 ? $cur_cnt+1: 0b0;
 }
 
 sub flprint{

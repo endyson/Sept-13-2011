@@ -62,6 +62,8 @@ my      $thumb_or_not_emu   = $5;
 my      $imm_or_reg_emu     = $6;
 my      $imm32_emu      = $7;
 
+print "shift_or_not_emu = $shift_or_not_emu","\n";
+
         if($shift_or_not_emu eq "1"){
            $emu_line = <STAGE_2_OUTPUT_EMU>;
            $emu_line =~ /emu:s_type=(..)\soffset=(.....)/;
