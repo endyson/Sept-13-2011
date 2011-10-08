@@ -362,11 +362,11 @@ foreach (@pattern_1){
             #print "imm12_11_10 != 00, ROR_C\n";
         }
 
-        printf( "emu:rn=[%x]\trm=[X]\trd=[%x]\tshift_or_not=[0]\tthumb_or_not=[1]\timm_or_reg=[1]\t",$rn,$rd);
-        printf("imm32=[");
-        flprint($imm32, BASE,8,"]");
-        printf("imm12=[%x]\tcur_inst=[%x]\t",$imm12,$inst[$pc-1]);
-        printf("PUW=[X]\tRt2=[X]\treg_list=[X]\t");
+        printf  "EMU:rn_addr=%x\trm_addr=X\trd_addr=%x\t",$rn,$rd;
+        printf  "shift_or_not=0\tthumb_or_not=1\timm_or_reg=1\t";
+        printf  "imm32=%d\timm12=%d\tcur_inst=%x\t",$imm32, $imm12,$inst[$pc-1];
+        printf  "PUW=X\trt2=X\treg_list=X\t";
+        printf  "pc = %d\t",$pc-1;
 
         print $inst_name_pattern_1[$index],"\n";
 
@@ -409,11 +409,11 @@ else{$inst[$pc++] = $_ | $p_i | $p_Rn | $p_imm3 | $p_Rd | $p_imm8;}
 
         $imm32  = ($i<<11) | ($imm3<<8) | $imm8;
         
-        printf( "emu:rn=[%x]\trm=[X]\trd=[%x]\tshift_or_not=[0]\tthumb_or_not=[0]\timm_or_reg=[1]\t",$rn,$rd);
-        printf("imm32=[");
-        flprint($imm32, BASE,8,"]\t");
-        printf "cur_inst=%x\t",$inst[$pc-1];
-        printf("PUW=[X]\tRt2=[X]\treg_list=[X]\t");
+        printf "EMU:rn_addr=%x\trm_addr=X\trd_addr=%x\t",$rn,$rd;
+        printf "shift_or_not=0\tthumb_or_not=0\timm_or_reg=1\t";
+        printf "imm32=%d\tcur_int=%x",$imm32,$inst[$pc-1];
+        printf "PUW=X\trt2=X\treg_list=X\t";
+        printf "pc = %d\t",$pc-1;
         print $inst_name_pattern_2[$index],"\n";
 
         $loop_cnt++;
@@ -451,13 +451,14 @@ foreach (@pattern_3){
 
         $inst[$pc++] = $_ | $p_s_type | $p_Rm | $p_Rn | $p_imm3 | $p_Rd | $p_imm2;
           $s_offset      = ($imm3<<2) | $imm2;
-        printf( "emu:rn=[%x]\trm=[%x]\trd=[%x]\tshift_or_not=[1]\tthumb_or_not=[0]\timm_or_reg=[0]\timm32=[xxxxxxxx]\t",$rn,$rm,$rd);
-        printf "cur_inst=%x\t",$inst[$pc-1];
-        
-        printf("PUW=[X]\tRt2=[X]\treg_list=[X]\t");
+        printf "ENU:rn_addr=%x\trm_addr=%x\trd_addr=%x\t",$rn,$rm,$rd;
+        printf "shift_or_not=1\tthumb_or_not=0\timm_or_reg=0\t";
+        printf "imm32=[XXXXXXXX]\tcur_inst=%x\t",$inst[$pc-1];
+        printf "PUW=X\trt2=X\treg_list=X\t";
+        printf "pc = %d\t",$pc-1;
         print $inst_name_pattern_3[$index],"\n";
 
-        printf( "emu:s_type=[%b]\toffset=[%x]\n",$s_type,$s_offset);
+        printf "EMU:s_type=%d\ts_offset=%d\n",$s_type,$s_offset;
                 $loop_cnt++;
 
         $s_type = $s_type <(1<<2) -1 ? $s_type +1 :0b0;
@@ -487,10 +488,11 @@ foreach (@pattern_4){
 
         $inst[$pc++] = $_ | $p_Rm | $p_Rdn;
 
-        printf( "emu:rn=[%x]\trm=[%x]\trd=[%x]\timm32=[xxxxxxxx]\tshift_or_not=[0]\tthumb_or_not=[0]\timm_or_reg=[0]\t",$rdn,$rm,$rdn);
+        printf( "EMU:rn_addr=%x\trm_addr=%x\trd_addr=%x\timm32=[xxxxxxxx]\tshift_or_not=0\tthumb_or_not=0\timm_or_reg=0\t",$rdn,$rm,$rdn);
         printf "cur_inst=%x\t",$inst[$pc-1];
         
-        printf("PUW=[X]\tRt2=[X]\treg_list=[X]\t");
+        printf("PUW=X\tRt2=X\treg_list=X\t");
+        printf "pc = %d\t",$pc-1;
         print $inst_name_pattern_4[$index],"\n";
         
         $loop_cnt++;
@@ -500,8 +502,6 @@ foreach (@pattern_4){
     }
 $index++;
 }
-
-
 
 ###################################################################
 #T e s t    I n s t r u c t i o n   F o r   P a t t e r n   5
@@ -521,11 +521,12 @@ foreach (@pattern_5){
         $inst[$pc++] = $_ | $p_Rn | $p_imm3 | $p_Rd;
         $imm32 = $imm3;
 
-        printf( "emu:rn=[%x]\trm=[X]\trd=[%x]\tshift_or_not=[0]\tthumb_or_not=[0]\timm_or_reg=[1]\t",$rn,$rd);
+        printf( "EMU:rn_addr=%x\trm_addr=X\trd_addr=%x\tshift_or_not=0\tthumb_or_not=0\timm_or_reg=1\t",$rn,$rd);
         printf("imm32=[");
         flprint($imm32, BASE,8,"]\t");
         printf "cur_inst=%x\t",$inst[$pc-1];
-        printf("PUW=[X]\tRt2=[X]\treg_list=[X]\t");
+        printf("PUW=X\tRt2=X\treg_list=X\t");
+        printf "pc = %d\t",$pc-1;
         print $inst_name_pattern_5[$index],"\n";
 
         $loop_cnt++;
@@ -554,11 +555,12 @@ foreach (@pattern_6){
         $inst[$pc++] = $_ | $p_Rdn | $p_imm8;
         $imm32 = $imm8;
 
-        printf( "emu:rn=[%x]\trm=[X]\trd=[%x]\tshift_or_not=[0]\tthumb_or_not=[0]\timm_or_reg=[1]\t",$rdn,$rdn);
+        printf( "EMU:rn_addr=%x\trm_addr=X\trd_addr=%x\tshift_or_not=0\tthumb_or_not=0\timm_or_reg=1\t",$rdn,$rdn);
         printf("imm32=[");
         flprint($imm32, BASE,8,"]\t");
         printf "cur_inst=%x\t",$inst[$pc-1];
-        printf("PUW=[X]\tRt2=[X]\treg_list=[X]\t");
+        printf("PUW=X\tRt2=X\treg_list=X\t");
+        printf "pc = %d\t",$pc-1;
         print $inst_name_pattern_6[$index],"\n";
 
         $loop_cnt++;
@@ -586,11 +588,12 @@ foreach (@pattern_7){
         $inst[$pc++] = $_ | $p_imm7;
         $imm32 = $imm7<<2;
 
-        printf( "emu:rn=[X]\trm=[X]\trd=[X]\tshift_or_not=[0]\tthumb_or_not=[0]\timm_or_reg=[1]\t");
+        printf( "EMU:rn_addr=X\trm_addr=X\trd_addr=X\tshift_or_not=0\tthumb_or_not=0\timm_or_reg=1\t");
         printf("imm32=[");
         flprint($imm32, BASE,8,"]\t");
         printf "cur_inst=%x\t",$inst[$pc-1];
-        printf("PUW=[X]\tRt2=[X]\treg_list=[X]\t");
+        printf("PUW=X\tRt2=X\treg_list=X\t");
+        printf "pc = %d\t",$pc-1;
         print $inst_name_pattern_7[$index],"\n";
 
         $loop_cnt++;
@@ -619,9 +622,10 @@ foreach (@pattern_8){
 
         $inst[$pc++] = $_ | $p_Rm | $p_Rn | $p_Rd;
 
-        printf( "emu:rn=[%x]\trm=[%x]\trd=[%x]\timm32=[X]\tshift_or_not=[0]\tthumb_or_not=[0]\timm_or_reg=[0]\t",$rn,$rm,$rd);
+        printf( "EMU:rn_addr=%x\trm_addr=%x\trd_addr=%x\timm32=X\tshift_or_not=0\tthumb_or_not=0\timm_or_reg=0\t",$rn,$rm,$rd);
         printf "cur_inst=%x\t",$inst[$pc-1];
-        printf("PUW=[X]\tRt2=[X]\treg_list=[X]\t");
+        printf("PUW=X\tRt2=X\treg_list=X\t");
+        printf "pc = %d\t",$pc-1;
 print $inst_name_pattern_8[$index],"\n";
         $loop_cnt++;
 
@@ -651,9 +655,10 @@ foreach (@pattern_9){
 
         $inst[$pc++] = $_ | $p_Rdm | $p_Rn| $p_DM;
         
-        printf( "emu:rn=[%x]\trm=[%x]\trd=[%x]\timm32=[X]\tshift_or_not=[0]\tthumb_or_not=[0]\timm_or_reg=[0]\t",$rn,$rdm,$rdm);
+        printf( "EMU:rn_addr=%x\trm_addr=%x\trd_addr=%x\timm32=X\tshift_or_not=0\tthumb_or_not=0\timm_or_reg=0\t",$rn,$rdm,$rdm);
         printf "cur_inst=%x\t",$inst[$pc-1];
-        printf("PUW=[X]\tRt2=[X]\treg_list=[X]\t");
+        printf("PUW=X\tRt2=X\treg_list=X\t");
+        printf "pc = %d\t",$pc-1;
         print $inst_name_pattern_9[$index],"\n";
 
 
@@ -685,9 +690,10 @@ foreach (@pattern_10){
 
         $inst[$pc++] = $_ | $p_Rn | $p_Rt| $p_PUW | $p_imm8;
         
-        printf( "emu:rn=[%x]\trm=[X]\trd=[%x]\timm32=[%x]\tshift_or_not=[0]\tthumb_or_not=[0]\timm_or_reg=[1]\t",$rn,$rt,$imm8);
+        printf( "EMU:rn_addr=%x\trm_addr=X\trd_addr=%x\timm32=%x\tshift_or_not=0\tthumb_or_not=0\timm_or_reg=1\t",$rn,$rt,$imm8);
         printf "cur_inst=%x\t",$inst[$pc-1];
-        printf("PUW=[%x]\tRt2=[X]\treg_list=[X]\t",$puw);
+        printf("PUW=%x\tRt2=X\treg_list=X\t",$puw);
+        printf "pc = %d\t",$pc-1;
         print $inst_name_pattern_10[$index],"\n";
 
         $loop_cnt++;
@@ -726,9 +732,10 @@ foreach (@pattern_11){
         $inst[$pc++] = $_ | $p_Rn | $p_Rt| $p_Rt2 | $p_PU | $p_W | $p_imm8;
         $puw = ($pu<<1) | $w;
 
-        printf( "emu:rn=[%x]\trm=[X]\trd=[%x]\timm32=[%x]\tshift_or_not=[0]\tthumb_or_not=[0]\timm_or_reg=[1]\t",$rn,$rt,$imm8);
+        printf( "EMU:rn_addr=%x\trm_addr=X\trd_addr=%x\timm32=%x\tshift_or_not=0\tthumb_or_not=0\timm_or_reg=1\t",$rn,$rt,$imm8);
         printf "cur_inst=%x\t",$inst[$pc-1];
-        printf("PUW=[%x]\tRt2=[%x]\treg_list=[X]\t",$puw,$rt2);
+        printf("PUW=%x\tRt2=%x\treg_list=X\t",$puw,$rt2);
+        printf "pc = %d\t",$pc-1;
         print $inst_name_pattern_11[$index],"\n";
 
         $loop_cnt++;
@@ -764,12 +771,13 @@ foreach (@pattern_12){
 
         $inst[$pc++] = $_ | $p_Rn | $p_Rt| $p_Rm | $p_imm2;
 
-        printf( "emu:rn=[%x]\trm=[%x]\trd=[%x]\timm32=[X]\tshift_or_not=[1]\tthumb_or_not=[0]\timm_or_reg=[0]\t",$rn,$rm,$rt);
+        printf( "EMU:rn_addr=%x\trm_addr=%x\trd_addr=%x\timm32=X\tshift_or_not=1\tthumb_or_not=0\timm_or_reg=0\t",$rn,$rm,$rt);
         printf "cur_inst=%x\t",$inst[$pc-1];
-        printf("PUW=[X]\tRt2=[X]\treg_list=[X]\t");
+        printf("PUW=X\tRt2=X\treg_list=X\t");
+        printf "pc = %d\t",$pc-1;
         print $inst_name_pattern_12[$index],"\n";
 $s_offset = $imm2;
-    printf( "emu:s_type=[00]\toffset=[%x]\n",$s_offset);
+    printf( "EMU:s_type=00\toffset=%x\n",$s_offset);
 
         $loop_cnt++;
 
@@ -802,9 +810,10 @@ foreach (@pattern_13){
 
         $inst[$pc++] = $_ | $p_Rn | $p_PM| $p_W | $p_reg_list;
         
-        printf( "emu:rn=[%x]\trm=[X]\trd=[X]\timm32=[X]\tshift_or_not=[0]\tthumb_or_not=[0]\timm_or_reg=[0]\t", $rn );
+        printf( "EMU:rn_addr=%x\trm_addr=X\trd_addr=X\timm32=X\tshift_or_not=0\tthumb_or_not=0\timm_or_reg=0\t", $rn );
         printf "cur_inst=%x\t",$inst[$pc-1];
-        printf("PUW=[001]\tRt2=[X]\treg_list=[%x]\t",(($pm<<1)<<13) | $reg_list );
+        printf("PUW=[001]\tRt2=X\treg_list=%x\t",(($pm<<1)<<13) | $reg_list );
+        printf "pc = %d\t",$pc-1;
         print $inst_name_pattern_13[$index],"\n";
 
         $loop_cnt++;
@@ -837,10 +846,11 @@ foreach (@pattern_14){
 
         $inst[$pc++] = $_ | $p_Rn | $p_U| $p_Rt | $p_imm12;
         
-        printf( "emu:rn=[%x]\trm=[X]\trd=[%x]\timm32=[%x]\tshift_or_not=[0]\tthumb_or_not=[0]\timm_or_reg=[1]\t",
+        printf( "EMU:rn_addr=%x\trm_addr=X\trd_addr=%x\timm32=%x\tshift_or_not=0\tthumb_or_not=0\timm_or_reg=1\t",
             $rn, $rt,$imm12);
         printf "cur_inst=%x\t",$inst[$pc-1];
-        printf("PUW=[1%b0]\tRt2=[X]\treg_list=[X]\t", $u);
+        printf("PUW=[1%b0]\tRt2=X\treg_list=X\t", $u);
+        printf "pc = %d\t",$pc-1;
         print $inst_name_pattern_14[$index],"\n";
 
         $loop_cnt++;
@@ -869,10 +879,11 @@ foreach (@pattern_15){
 
         $inst[$pc++] = $_ | $p_Rn | $p_reg_list;
         
-        printf( "emu:rn=[%x]\trm=[X]\trd=[X]\timm32=[X]\tshift_or_not=[0]\tthumb_or_not=[0]\timm_or_reg=[0]\t",
+        printf( "EMU:rn_addr=%x\trm_addr=X\trd_addr=X\timm32=X\tshift_or_not=0\tthumb_or_not=0\timm_or_reg=0\t",
             $rn);
         printf "cur_inst=%x\t",$inst[$pc-1];
-        printf("PUW=[00%b]\tRt2=[X]\treg_list=[%x]\t",$reg_list & (1<<$rn) ? 1:0, $reg_list);
+        printf("PUW=[00%b]\tRt2=X\treg_list=%x\t",$reg_list & (1<<$rn) ? 1:0, $reg_list);
+        printf "pc = %d\t",$pc-1;
         print $inst_name_pattern_15[$index],"\n";
 
         $loop_cnt++;
@@ -901,10 +912,11 @@ foreach (@pattern_16){
 
         $inst[$pc++] = $_ | $p_Rn | $p_imm5 | $p_Rt;
         
-        printf( "emu:rn=[%x]\trm=[X]\trd=[%x]\timm32=[%x]\tshift_or_not=[0]\tthumb_or_not=[0]\timm_or_reg=[1]\t",
+        printf( "EMU:rn_addr=%x\trm_addr=X\trd_addr=%x\timm32=%x\tshift_or_not=0\tthumb_or_not=0\timm_or_reg=1\t",
             $rn,$rt, $imm5);
         printf "cur_inst=%x\t",$inst[$pc-1];
-        printf("PUW=[110]\tRt2=[X]\treg_list=[X]\t");
+        printf("PUW=[110]\tRt2=X\treg_list=X\t");
+        printf "pc = %d\t",$pc-1;
         print $inst_name_pattern_16[$index],"\n";
 
         $loop_cnt++;

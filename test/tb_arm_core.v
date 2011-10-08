@@ -17,8 +17,8 @@
 
  module tb_arm_core;
 
- //Set Instruction Memory depth to 1 MB for test
- parameter MEM_DEPTH=(1<<20);
+ //Set Instruction Memory depth to 2 MB for test
+ parameter MEM_DEPTH=(1<<21);
 
  integer fd_stage_one;
  integer fd_stage_two;
@@ -86,7 +86,7 @@ end
 //Initializition 
 initial begin
     $readmemh("./inst.dat",inst_mem);
-    
+
     //Logging TARGET signals 
     fd_stage_one  =   $fopen("./stage_1_output_sim.log","w");
     fd_stage_two  =   $fopen("./stage_2_output_sim.log","w");
@@ -101,7 +101,7 @@ end
 //////////////////////////////////////////////////////////////
 always @ (posedge clk)begin
     if(pc == 9*256 + 3*16)begin
-    //     apsr_reg = ~apsr_reg;
+        //     apsr_reg = ~apsr_reg;
     end
     #1  $fdisplay(fd_stage_one,"next_inst_hw=[%h]\tcur_inst=[%h]\thint_or_exc=[%b]\tinst_valid=%b\tvalid_inst=[%h]\tcur_cond=[%b]\tmask=[%b]\tapsr=[%b]\tpc=[%d]\t@ %d",
         inst_hw,cur_inst, hint_or_exc, inst_valid, inst, cur_cond,it_status[3:0],apsr,pc, $time);
@@ -128,7 +128,7 @@ wire [31:0] inst_stage_2 = u_arm_core.inst_stage_2;
 //Used to control the $display task to print out the valid output signals at
 //stage two.
 reg inst_valid_stage_2;
-always @(posedge clk) inst_valid_stage_2 <= inst_valid;
+always @(posedge clk)begin inst_valid_stage_2 <= inst_valid;end
 
 integer num_of_inst;
 integer fd_ex;
@@ -139,16 +139,16 @@ initial begin
 end
 
 always @ (posedge clk)begin
-    if(inst_valid_stage_2) num_of_inst++;
+    if(inst_valid_stage_2)
+        num_of_inst++;
     $fdisplay(fd_ex,"num_of_inst = %d", num_of_inst);
 end
 
-always @ (inst_valid_stage_2)begin
-    if(inst_valid_stage_2)begin
-  #1   $fdisplay(fd_stage_two,"Rn_A=%h\tRm_A=%h\tRd_A=%h\tRn_D=%h\tRm_D=%h\tRd_D=%h\timm_or_reg=%b\tshift_or_not=%b\tthumb_or_not=%b\top1=%h\top2=%h\timm12=%h\tinst_stage_2=%h",
-                rn_addr,rm_addr,rd_addr,rn_data,rm_data,rd_data,imm_or_reg,shift_or_not,thumb_or_not,op1,op2,imm12,inst_stage_2);
-        end
-    end
+always @(posedge clk) #1 begin
+    if(inst_valid_stage_2)
+       $fwrite(fd_stage_two,"rn_addr=%h\trm_addr=%h\trd_addr=%h\trn_data=%d\ttm_data=%d\trd_data=%d\timm_or_reg=%b\tshift_or_not=%b\tthumb_or_not=%b\top1=%d\top2=%d\timm12=%d\tinst_stage_2=%h\tpc=%d\ttime=%d\n",rn_addr,rm_addr,rd_addr,rn_data,rm_data,rd_data,imm_or_reg,shift_or_not,thumb_or_not,op1,op2,imm12,inst_stage_2,pc-1,$time);
+        //$display ("inst_stage_2 = %h",u_arm_core.inst_stage_2);
+end
 
 ///////////////////////////////////////////////////////////////
 //T e r m i n a t i o n

@@ -7,7 +7,7 @@ stage_2_gen:
 	@echo "Generating test instructions for Decode operation"
 	@cd ${LOG_DIR} && perl ${TOOLS_DIR}/inst_stage_2_gen.pl >inst_stage_2_gen.dat
 	@cd ${LOG_DIR} && grep @ inst_stage_2_gen.dat >inst.dat
-	@cd ${LOG_DIR} && grep emu inst_stage_2_gen.dat > stage_2_output_emu.log
+	@cd ${LOG_DIR} && grep EMU inst_stage_2_gen.dat > stage_2_output_emu.log
 
 inst_depth_chk:
 	@cd ${LOG_DIR} && perl ${TOOLS_DIR}/inst_depth_chk.pl inst.dat >inst_depth.dat

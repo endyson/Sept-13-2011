@@ -12,15 +12,23 @@
 #         Please Feel free to email me by the email address above.
 
 use strict;
-
+use constant MAX_ERR => 10;
 my $sim_line;
 my $emu_line;
+my @emu_signals;
+my @sim_signals;
+my @pair;
+
+my $err_num = 0;
 
 open STAGE_2_OUTPUT_SIM, $ARGV[0] or die "File $ARGV[0] can not be opened!\n";
 open STAGE_2_OUTPUT_EMU, $ARGV[1] or die "File $ARGV[1] can not be opened!\n";
 
 my $loop_cnt_sim = 0;
 my $loop_cnt_emu = 0;
+
+my %sim_hash;
+my %emu_hash;
 
 foreach $sim_line (<STAGE_2_OUTPUT_SIM>){
     $loop_cnt_sim++;
@@ -30,98 +38,90 @@ foreach $sim_line (<STAGE_2_OUTPUT_SIM>){
     $emu_line = <STAGE_2_OUTPUT_EMU>;
     chomp $emu_line;
 
-   if(not defined $emu_line){
-   printf STDERR ("\$emu_line found uninitialized!\n");
-   exit;
-   } 
-    #    $sim_line =~ /Rn_A=\[([0-9x\s]{1,2})\]\sRm_A=\[([0-9x\s]{1,2})\]\sRd_A=\[([0-9x\s]{1,2})\]\sRn_D=\[([0-9x\s]{1,})\]\sRm_D=\[([0-9x\s]{1,})\]\sRd_D=\[([0-9x\s]{1,})\]\simm_or_reg=\[(.)\]\sshift_or_not=\[(.)\]\sthumb_or_not=\[(.)\]\sop1=\[([0-9x\s]{1,})\]\sop2=\[([0-9x\s]{1,})\]/;
-
-    $sim_line =~ /Rn_A=(.)\sRm_A=(.)\sRd_A=(.)\sRn_D=(........)\sRm_D=(........)\sRd_D=(........)\simm_or_reg=(.)\sshift_or_not=(.)\sthumb_or_not=(.)\sop1=(........)\sop2=(........)/;
-my        $rn_addr_sim = $1;
-my        $rm_addr_sim = $2;
-my        $rd_addr_sim = $3;
-my        $rn_data_sim = $4;
-my        $rm_data_sim = $5;
-my        $rd_data_sim = $6;
-my        $imm_or_reg_sim = $7;
-my        $shift_or_not_sim = $8;
-my        $thumb_or_not_sim = $9;
-my        $op1_sim = $10;
-my        $op2_sim = $11;
-        if (not defined $rn_addr_sim){      
-        printf STDERR ("\$rn_addr_sim found uninitilized at line $loop_cnt_sim\n");
+    if(not defined $emu_line){
+        printf STDERR ("\$emu_line found uninitialized!\n");
         exit;
+    } 
+    @sim_signals = split "\s", $sim_line;
+    foreach(@sim_signals){
+        @pair = split "=";
+        $sim_hash{$pair[0]} = $pair[1];
     }
 
-        $emu_line =~ /emu:rn=\[(.)\]\srm=\[(.)\]\srd=\[(.)\]\sshift_or_not=\[(.)\]\sthumb_or_not=\[(.)\]\simm_or_reg=\[(.)\]\simm32=\[(........)\]/;
-my      $rn_addr_emu    = $1;
-my      $rm_addr_emu    = $2;
-my      $rd_addr_emu    = $3;
-my      $shift_or_not_emu   = $4;
-my      $thumb_or_not_emu   = $5;
-my      $imm_or_reg_emu     = $6;
-my      $imm32_emu      = $7;
 
-print "shift_or_not_emu = $shift_or_not_emu","\n";
-
-        if($shift_or_not_emu eq "1"){
-           $emu_line = <STAGE_2_OUTPUT_EMU>;
-           $emu_line =~ /emu:s_type=(..)\soffset=(.....)/;
-           my $s_type_emu = $1;
-           my $s_offset_emu = $2;
-           if(not defined $s_type_emu){
-           printf STDERR("Uninitialized s_type found at line: $loop_cnt_emu!\n");
-           exit;
-           }
-           $loop_cnt_emu++;
-
+    @emu_signals = split "\s", $emu_line;
+    foreach(@emu_signals){
+        @pair = split "=";
+        $emu_hash{$pair[0]}=$pair[1];
+    }
+    if($emu_hash{"shift_or_not"} eq "1"){
+        $emu_line = <STAGE_2_OUTPUT_EMU>;
+        @emu_signals = split "\s", $emu_line;
+        foreach(@emu_signals){
+            @pair = split "=";
+            $emu_hash{$pair[0]}=$pair[1];
         }
-if(not defined $rn_addr_emu){
-        printf STDERR ("\$rn_addr_emu found not initialized at line $loop_cnt_emu\n");
+        $loop_cnt_emu++;
     }
-if($rn_addr_sim ne $rn_addr_emu && $rn_addr_emu ne "X"){
-printf STDERR ("CHECK FAILED:$sim_line line:$loop_cnt_sim\n");
-printf STDERR ("EMU:$emu_line line:$loop_cnt_emu\n");
-print("*************************************\n");
-print("FAILED:$sim_line line:$loop_cnt_sim\n");
-print("EMU:$emu_line line:$loop_cnt_emu\n");
-print("rn_sim=$rn_addr_sim,rn_emu=$rn_addr_emu\n");
 
-}
-elsif($rd_addr_sim ne $rd_addr_emu && $rd_addr_emu ne "X"){
-printf STDERR ("CHECK FAILED:$sim_line line:$loop_cnt_sim\n");
-printf STDERR ("EMU:$emu_line line:$loop_cnt_emu\n");
-print("************************************\n");
-print("FAILED:$sim_line line:$loop_cnt_sim\n");
-print("EMU:$emu_line line:$loop_cnt_emu\n");
-print("rd_sim=$rd_addr_sim,rd_emu=$rd_addr_emu\n");
-}
-elsif($rm_addr_sim ne $rm_addr_emu && $rm_addr_emu ne "X"){
-printf STDERR ("CHECK FAILED:$sim_line line:$loop_cnt_sim\n");
-printf STDERR ("EMU:$emu_line line:$loop_cnt_emu\n");
-print("*************************************\n");
-print("FAILED:$sim_line line:$loop_cnt_sim\n");
-print("EMU:$emu_line line:$loop_cnt_emu\n");
-print("rm_sim=$rm_addr_sim,rm_emu=$rm_addr_emu\n");
+#    if(not defined $rn_addr_emu){
+#        printf STDERR ("\$rn_addr_emu found not initialized at line $loop_cnt_emu\n");
+#    }
 
+    if($sim_hash{"rn_addr"} ne $emu_hash{"rn_addr"} && $emu_hash{"rn_addr"} ne "X"){
+        if($err_num<MAX_ERR){
+            printf STDERR ("CHECK FAILED:$sim_line line:$loop_cnt_sim\n");
+            printf STDERR ("EMU:$emu_line line:$loop_cnt_emu\n");
+        }
+        print("*************************************\n");
+        print("FAILED:$sim_line line:$loop_cnt_sim\n");
+        print("EMU:$emu_line line:$loop_cnt_emu\n");
+        print "rn_sim=",$sim_hash{"rn_addr"},"\t","rn_emu=",$emu_hash{"rn_addr"},"\n";
+        $err_num++;
+    }
+    elsif($sim_hash{"rd_addr"} ne $emu_hash{"rd_addr"} && $emu_hash{"rd_addr"} ne "X"){
+        if($err_num<MAX_ERR){
+            printf STDERR ("CHECK FAILED:$sim_line line:$loop_cnt_sim\n");
+            printf STDERR ("EMU:$emu_line line:$loop_cnt_emu\n");
+        }
+        print("************************************\n");
+        print("FAILED:$sim_line line:$loop_cnt_sim\n");
+        print("EMU:$emu_line line:$loop_cnt_emu\n");
+        print "rd_sim=",$sim_hash{"rd_addr"},"\t","rd_emu=",$emu_hash{"rd_addr"},"\n";
+        $err_num++;
+    }
+    elsif($sim_hash{"rm_addr"} ne $emu_hash{"rm_addr"} && $emu_hash{"rm_addr"} ne "X"){
+        if($err_num<MAX_ERR){
+            printf STDERR ("CHECK FAILED:$sim_line line:$loop_cnt_sim\n");
+            printf STDERR ("EMU:$emu_line line:$loop_cnt_emu\n");
+        }
+
+        print("*************************************\n");
+        print("FAILED:$sim_line line:$loop_cnt_sim\n");
+        print("EMU:$emu_line line:$loop_cnt_emu\n");
+        print"rm_sim=",$sim_hash{"rm_addr"},"\t","rm_emu=",$emu_hash{"rm_addr"},"\n";
+
+        $err_num++;
+    }
+    elsif($sim_hash{"shift_or_not"} ne $emu_hash{"shift_or_not"} || $emu_hash{"imm_or_reg"} ne $sim_hash{"imm_or_reg"} || $sim_hash{"thumb_or_not"} ne $emu_hash{"thumb_or_not"}){
+        if($err_num<MAX_ERR){printf STDERR ("CHECK FAILED:$sim_line line:$loop_cnt_sim\n");
+            printf STDERR ("EMU:$emu_line line:$loop_cnt_emu\n");}
+        print("*************************************\n");
+        print("FAILED:$sim_line line:$loop_cnt_sim\n");
+        print("EMU:$emu_line line:$loop_cnt_emu\n");
+        print "shift_or_not_sim=",$sim_hash{"shift_or_not"},"\t","shift_or_not_emu=",$emu_hash{"shift_or_not"},"\t","imm_or_reg_sim=",$sim_hash{"imm_or_reg"},"\t","imm_or_reg_emu=",$emu_hash{"imm_or_reg"},"\t","thumb_or_not_sim=",$sim_hash{"thumb_or_not"},"\t","thumb_or_not_emu=",$emu_hash{"thumb_or_not"},"\n";
+        $err_num++;
+    }
+    elsif($sim_hash{"imm_or_reg"} == 1  && $emu_hash{"imm_or_reg"} == 1 && $sim_hash{"op2"} !=  $emu_hash{"imm32"}){
+        if($err_num<MAX_ERR){printf STDERR ("CHECK FAILED:$sim_line line:$loop_cnt_sim\n");
+            printf STDERR ("EMU:$emu_line line:$loop_cnt_emu\n");}
+        print("*************************************\n");
+        print("FAILED:$sim_line line:$loop_cnt_sim\n");
+        print("EMU:$emu_line line:$loop_cnt_emu\n");
+        print "imm_or_reg_sim=",$sim_hash{"imm_or_reg"},"\t","imm_or_reg_emu=",$emu_hash{"imm_or_reg"},"\t","op2_sim=",$sim_hash{"op2"},"\t","imm32_emu=",$emu_hash{"imm32"},"\n";
+        $err_num++;
+    }
+    else{
+        print "$loop_cnt_sim Check Passed!\n";
+    }
 }
-elsif($shift_or_not_sim ne $shift_or_not_emu || $imm_or_reg_emu ne $imm_or_reg_sim || $thumb_or_not_sim ne $thumb_or_not_emu){
-printf STDERR ("CHECK FAILED:$sim_line line:$loop_cnt_sim\n");
-printf STDERR ("EMU:$emu_line line:$loop_cnt_emu\n");
-print("*************************************\n");
-print("FAILED:$sim_line line:$loop_cnt_sim\n");
-print("EMU:$emu_line line:$loop_cnt_emu\n");
-print("shift_or_not_sim=$shift_or_not_sim,shift_or_not_emu=$shift_or_not_emu,imm_or_reg_sim=$imm_or_reg_sim,imm_or_reg_emu=$imm_or_reg_emu,thumb_or_not_sim=$thumb_or_not_sim,thumb_or_not_emu=$thumb_or_not_emu\n");
-}
-elsif($imm_or_reg_sim eq "1" && $imm_or_reg_emu eq "1" && $op2_sim ne $imm32_emu){
-printf STDERR ("CHECK FAILED:$sim_line line:$loop_cnt_sim\n");
-printf STDERR ("EMU:$emu_line line:$loop_cnt_emu\n");
-print("*************************************\n");
-print("FAILED:$sim_line line:$loop_cnt_sim\n");
-print("EMU:$emu_line line:$loop_cnt_emu\n");
-print("imm_or_reg_sim=$imm_or_reg_sim,imm_or_reg_emu=$imm_or_reg_emu,op2_sim=$op2_sim,imm32_emu=$imm32_emu\n");
-}
-else{
-print "$loop_cnt_sim Check Passed!\n";
-}
- }
