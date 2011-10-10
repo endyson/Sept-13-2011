@@ -362,9 +362,9 @@ foreach (@pattern_1){
             #print "imm12_11_10 != 00, ROR_C\n";
         }
 
-        printf  "EMU:Rn_addr=%x\tRm_addr=X\tRd_addr=%x\t",$rn,$rd;
+        printf  "EMU: Rn_addr=%x\tRm_addr=X\tRd_addr=%x\t",$rn,$rd;
         printf  "shift_or_not=0\tthumb_or_not=1\timm_or_reg=1\t";
-        printf  "imm32=%d\timm12=%d\tcur_inst=%x\t",$imm32, $imm12,$inst[$pc-1];
+        printf  "imm32=%x\timm12=%x\tcur_inst=%x\t",$imm32, $imm12,$inst[$pc-1];
         printf  "PUW=X\tRt2_addr=X\treg_list=X\t";
         printf  "pc=%d\t",$pc-1;
 
@@ -409,9 +409,9 @@ foreach (@pattern_2){
 
         $imm32  = ($i<<11) | ($imm3<<8) | $imm8;
 
-        printf "EMU:Rn_addr=%x\tRm_addr=X\tRd_addr=%x\t",$rn,$rd;
+        printf "EMU: Rn_addr=%x\tRm_addr=X\tRd_addr=%x\t",$rn,$rd;
         printf "shift_or_not=0\tthumb_or_not=0\timm_or_reg=1\t";
-        printf "imm32=%d\tcur_int=%x\t",$imm32,$inst[$pc-1];
+        printf "imm32=%x\tcur_int=%x\t",$imm32,$inst[$pc-1];
         printf "PUW=X\tRt2_addr=X\treg_list=X\t";
         printf "pc=%d\t",$pc-1;
         print $inst_name_pattern_2[$index],"\n";
@@ -451,14 +451,14 @@ foreach (@pattern_3){
 
         $inst[$pc++] = $_ | $p_s_type | $p_Rm | $p_Rn | $p_imm3 | $p_Rd | $p_imm2;
         $s_offset      = ($imm3<<2) | $imm2;
-        printf "ENU:Rn_addr=%x\tRm_addr=%x\tRd_addr=%x\t",$rn,$rm,$rd;
+        printf "EMU: Rn_addr=%x\tRm_addr=%x\tRd_addr=%x\t",$rn,$rm,$rd;
         printf "shift_or_not=1\tthumb_or_not=0\timm_or_reg=0\t";
-        printf "imm32=[XXXXXXXX]\tcur_inst=%x\t",$inst[$pc-1];
+        printf "imm32=X\tcur_inst=%x\t",$inst[$pc-1];
         printf "PUW=X\tRt2_addr=X\treg_list=X\t";
         printf "pc=%d\t",$pc-1;
         print $inst_name_pattern_3[$index],"\n";
 
-        printf "EMU:s_type=%d\ts_offset=%d\n",$s_type,$s_offset;
+        printf "EMU: s_type=%x\ts_offset=%x\n",$s_type,$s_offset;
         $loop_cnt++;
 
         $s_type = $s_type <(1<<2) -1 ? $s_type +1 :0b0;
@@ -488,9 +488,9 @@ foreach (@pattern_4){
 
         $inst[$pc++] = $_ | $p_Rm | $p_Rdn;
 
-        printf "EMU:Rn_addr=%x\tRm_addr=%x\tRd_addr=%x\t",$rdn,$rm,$rdn;
+        printf "EMU: Rn_addr=%x\tRm_addr=%x\tRd_addr=%x\t",$rdn,$rm,$rdn;
         printf "shift_or_not=0\tthumb_or_not=0\timm_or_reg=0\t";
-        printf "imm32=[XXXXXXXX]\tcur_inst=%x\t",$inst[$pc-1];
+        printf "imm32=X\tcur_inst=%x\t",$inst[$pc-1];
         printf("PUW=X\tRt2_addr=X\treg_list=X\t");
         printf "pc=%d\t",$pc-1;
         print $inst_name_pattern_4[$index],"\n";
@@ -521,7 +521,7 @@ foreach (@pattern_5){
         $inst[$pc++] = $_ | $p_Rn | $p_imm3 | $p_Rd;
         $imm32 = $imm3;
 
-        printf "EMU:Rn_addr=%x\tRm_addr=X\tRd_addr=%x\t",$rn,$rd;
+        printf "EMU: Rn_addr=%x\tRm_addr=X\tRd_addr=%x\t",$rn,$rd;
         printf "shift_or_not=0\tthumb_or_not=0\timm_or_reg=1\t";
         printf "imm32=%d\tcur_inst=%x\t",$imm32,$inst[$pc-1];
         printf("PUW=X\tRt2_addr=X\treg_list=X\t");
@@ -554,9 +554,9 @@ foreach (@pattern_6){
         $inst[$pc++] = $_ | $p_Rdn | $p_imm8;
         $imm32 = $imm8;
 
-        printf "EMU:Rn_addr=%x\tRm_addr=X\tRd_addr=%x\t",$rdn,$rdn;
+        printf "EMU: Rn_addr=%x\tRm_addr=X\tRd_addr=%x\t",$rdn,$rdn;
         printf "shift_or_not=0\tthumb_or_not=0\timm_or_reg=1\t";
-        printf "imm32=%d\tcur_inst=%x\t",$imm32,$inst[$pc-1];
+        printf "imm32=%x\tcur_inst=%x\t",$imm32,$inst[$pc-1];
         printf "PUW=X\tRt2_addr=X\treg_list=X\t";
         printf "pc=%d\t",$pc-1;
         print $inst_name_pattern_6[$index],"\n";
@@ -586,9 +586,9 @@ foreach (@pattern_7){
         $inst[$pc++] = $_ | $p_imm7;
         $imm32 = $imm7<<2;
 
-        printf "EMU:Rn_addr=X\tRm_addr=X\tRd_addr=X\t";
+        printf "EMU: Rn_addr=X\tRm_addr=X\tRd_addr=X\t";
         printf "shift_or_not=0\tthumb_or_not=0\timm_or_reg=1\t";
-        printf "imm32=%d\tcur_inst=%x\t",$imm32,$inst[$pc-1];
+        printf "imm32=%x\tcur_inst=%x\t",$imm32,$inst[$pc-1];
         printf "PUW=X\tRt2_addr=X\treg_list=X\t";
         printf "pc=%d\t",$pc-1;
         print $inst_name_pattern_7[$index],"\n";
@@ -619,7 +619,7 @@ foreach (@pattern_8){
 
         $inst[$pc++] = $_ | $p_Rm | $p_Rn | $p_Rd;
 
-        printf "EMU:Rn_addr=%x\tRm_addr=%x\tRd_addr=%x\t",$rn,$rm,$rd;
+        printf "EMU: Rn_addr=%x\tRm_addr=%x\tRd_addr=%x\t",$rn,$rm,$rd;
         printf "shift_or_not=0\tthumb_or_not=0\timm_or_reg=0\t";
         printf "imm32=X\tcur_inst=%x\t",$inst[$pc-1];
         printf "PUW=X\tRt2_addr=X\treg_list=X\t";
@@ -653,7 +653,7 @@ foreach (@pattern_9){
 
         $inst[$pc++] = $_ | $p_Rdm | $p_Rn| $p_DM;
 
-        printf "EMU:Rn_addr=%x\tRm_addr=%x\tRd_addr=%x\t",$rn,$rdm,$rdm;
+        printf "EMU: Rn_addr=%x\tRm_addr=%x\tRd_addr=%x\t",$rn,$rdm,$rdm;
         printf "shift_or_not=0\tthumb_or_not=0\timm_or_reg=0\t";
         printf "imm32=X\tcur_inst=%x\t",$inst[$pc-1];
         printf "PUW=X\tRt2_addr=X\treg_list=X\t";
@@ -690,7 +690,7 @@ foreach (@pattern_10){
 
         $imm32 = $imm8;
 
-        printf "EMU:Rn_addr=%x\tRm_addr=X\tRd_addr=%x\t",$rn,$rt;
+        printf "EMU: Rn_addr=%x\tRm_addr=X\tRd_addr=%x\t",$rn,$rt;
         printf "shift_or_not=0\tthumb_or_not=0\timm_or_reg=1\t";
         printf "imm32=%x\tcur_inst=%x\t",$imm32,$inst[$pc-1];
         printf "PUW=%x\tRt2_addr=X\treg_list=X\t",$puw;
@@ -733,10 +733,10 @@ foreach (@pattern_11){
         $inst[$pc++] = $_ | $p_Rn | $p_Rt| $p_Rt2 | $p_PU | $p_W | $p_imm8;
         $puw = ($pu<<1) | $w;
 
-        printf( "EMU:Rn_addr=%x\tRm_addr=X\tRd_addr=%x\timm32=%x\tshift_or_not=0\tthumb_or_not=0\timm_or_reg=1\t",$rn,$rt,$imm8);
+        printf( "EMU: Rn_addr=%x\tRm_addr=X\tRd_addr=%x\timm32=%x\tshift_or_not=0\tthumb_or_not=0\timm_or_reg=1\t",$rn,$rt,$imm8);
         printf "cur_inst=%x\t",$inst[$pc-1];
         printf("PUW=%x\tRt2_addr=%x\treg_list=X\t",$puw,$rt2);
-        printf "pc = %d\t",$pc-1;
+        printf "pc = %x\t",$pc-1;
         print $inst_name_pattern_11[$index],"\n";
 
         $loop_cnt++;
@@ -772,14 +772,14 @@ foreach (@pattern_12){
 
         $inst[$pc++] = $_ | $p_Rn | $p_Rt| $p_Rm | $p_imm2;
 
-        printf "EMU:Rn_addr=%x\tRm_addr=%x\tRd_addr=%x\t",$rn,$rm,$rt;
+        printf "EMU: Rn_addr=%x\tRm_addr=%x\tRd_addr=%x\t",$rn,$rm,$rt;
         printf "shift_or_not=1\tthumb_or_not=0\timm_or_reg=0\t";
         printf "imm32=X\tcur_inst=%x\t",$inst[$pc-1];
         printf "PUW=X\tRt2_addr=X\treg_list=X\t";
         printf "pc=%d\t",$pc-1;
         print $inst_name_pattern_12[$index],"\n";
         $s_offset = $imm2;
-        printf( "EMU:s_type=0\toffset=%d\n",$s_offset);
+        printf( "EMU: s_type=0\toffset=%x\n",$s_offset);
 
         $loop_cnt++;
 
@@ -812,7 +812,7 @@ foreach (@pattern_13){
 
         $inst[$pc++] = $_ | $p_Rn | $p_PM| $p_W | $p_reg_list;
 
-        printf "EMU:Rn_addr=%x\tRm_addr=X\tRd_addr=X\t",$rn;
+        printf "EMU: Rn_addr=%x\tRm_addr=X\tRd_addr=X\t",$rn;
         printf "shift_or_not=0\tthumb_or_not=0\timm_or_reg=0\t";
         printf "imm32=X\tcur_inst=%x\t",$inst[$pc-1];
         printf "PUW=1\tRt2_addr=X\treg_list=%x\t",(($pm<<1)<<13) | $reg_list;
@@ -849,10 +849,10 @@ foreach (@pattern_14){
 
         $inst[$pc++] = $_ | $p_Rn | $p_U| $p_Rt | $p_imm12;
         $imm32 = $imm12; 
-        printf "EMU:Rn_addr=%x\tRm_addr=X\tRd_addr=%x\t",$rn,$rt;
+        printf "EMU: Rn_addr=%x\tRm_addr=X\tRd_addr=%x\t",$rn,$rt;
         printf "shift_or_not=0\tthumb_or_not=0\timm_or_reg=1\t";
         printf "imm32=%x\tcur_inst=%x\t",$imm32,$inst[$pc-1];
-        printf "PUW=%d\tRt2_addr=X\treg_list=X\t", ($u<<1)|(1<<2);
+        printf "PUW=%x\tRt2_addr=X\treg_list=X\t", ($u<<1)|(1<<2);
         printf "pc=%d\t",$pc-1;
         print $inst_name_pattern_14[$index],"\n";
 
@@ -882,10 +882,10 @@ foreach (@pattern_15){
 
         $inst[$pc++] = $_ | $p_Rn | $p_reg_list;
 
-        printf "EMU:Rn_addr=%x\tRm_addr=X\tRd_addr=X\t",$rn;
+        printf "EMU: Rn_addr=%x\tRm_addr=X\tRd_addr=X\t",$rn;
         printf "shift_or_not=0\tthumb_or_not=0\timm_or_reg=0\t";
         printf "imm32=X\tcur_inst=%x\t",$inst[$pc-1];
-        printf "PUW=%d\tRt2_addr=X\treg_list=%x\t",is_true($reg_list & (1<<$rn)), $reg_list;
+        printf "PUW=%x\tRt2_addr=X\treg_list=%x\t",is_true($reg_list & (1<<$rn)), $reg_list;
         printf "pc=%d\t",$pc-1;
         print $inst_name_pattern_15[$index],"\n";
 
@@ -915,7 +915,7 @@ foreach (@pattern_16){
 
         $inst[$pc++] = $_ | $p_Rn | $p_imm5 | $p_Rt;
         $imm32 = $imm5;
-        printf "EMU:Rn_addr=%x\tRm_addr=X\tRd_addr=%x\t",$rn,$rt;
+        printf "EMU: Rn_addr=%x\tRm_addr=X\tRd_addr=%x\t",$rn,$rt;
         printf "shift_or_not=0\tthumb_or_not=0\timm_or_reg=1\t";
         printf "imm32=%x\tcur_inst=%x\t",$imm32,$inst[$pc-1];
         printf "PUW=6\tRt2_addr=X\treg_list=X\t";

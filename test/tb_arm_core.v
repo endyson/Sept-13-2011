@@ -146,7 +146,8 @@ end
 
 always @(posedge clk) #1 begin
     if(inst_valid_stage_2)
-       $fwrite(fd_stage_two,"rn_addr=%h\trm_addr=%h\trd_addr=%h\trn_data=%d\ttm_data=%d\trd_data=%d\timm_or_reg=%b\tshift_or_not=%b\tthumb_or_not=%b\top1=%d\top2=%d\timm12=%d\tinst_stage_2=%h\tpc=%d\ttime=%d\n",rn_addr,rm_addr,rd_addr,rn_data,rm_data,rd_data,imm_or_reg,shift_or_not,thumb_or_not,op1,op2,imm12,inst_stage_2,pc-1,$time);
+       $fwrite(fd_stage_two,"Rn_addr=%h\tRm_addr=%h\tRd_addr=%h\tRn_data=%h\tRm_data=%h\tRd_data=%h\timm_or_reg=%b\tshift_or_not=%b\tthumb_or_not=%b\top1=%h\top2=%h\timm12=%h\tinst_stage_2=%h\ttime:%t\tpc:%d\n",
+   rn_addr,rm_addr,rd_addr,rn_data,rm_data,rd_data,imm_or_reg,shift_or_not,thumb_or_not,op1,op2,imm12,inst_stage_2,$time,pc-1);
         //$display ("inst_stage_2 = %h",u_arm_core.inst_stage_2);
 end
 
