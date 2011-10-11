@@ -1,0 +1,2 @@
+test/tb_inst_pattern_match.v
+sim/rtl/inst_pattern_match.v

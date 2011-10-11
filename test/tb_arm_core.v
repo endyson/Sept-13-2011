@@ -92,7 +92,7 @@ initial begin
     fd_stage_two  =   $fopen("./stage_2_output_sim.log","w");
 
     //Dump waveform
-    $fsdbDumpfile("./wavevform.fsdb");
+    $fsdbDumpfile("./arm_core.fsdb");
     $fsdbDumpvars();
 end
 

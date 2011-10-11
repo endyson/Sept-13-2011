@@ -21,6 +21,10 @@ thumb_expand:build_tree thumb_expand_imm run
 
 reg_file:build_tree tb_reg_file run
 
+inst_pattern_match:build_tree tb_inst_pattern_match run
+
+.PHONEY: clean
+
 clean:
 	@echo "Cleaned up!"
 	@rm -rf ${OUT_DIR}
