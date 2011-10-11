@@ -227,7 +227,7 @@ my @pattern_7 = (
 );
 
 my @inst_name_pattern_7=(
-    "ADD(SP imm)"
+    "ADD(SP imm) T2"
 );
 
 
@@ -652,8 +652,8 @@ foreach (@pattern_9){
         $p_Rn  = $rn<<3;
 
         $inst[$pc++] = $_ | $p_Rdm | $p_Rn| $p_DM;
-
-        printf "EMU: Rn_addr=%x\tRm_addr=%x\tRd_addr=%x\t",$rn,$rdm,$rdm;
+        
+        printf "EMU: Rn_addr=%x\tRm_addr=%x\tRd_addr=%x\t",$rn,($dm<<3)|$rdm,($dm<<3)|$rdm;
         printf "shift_or_not=0\tthumb_or_not=0\timm_or_reg=0\t";
         printf "imm32=X\tcur_inst=%x\t",$inst[$pc-1];
         printf "PUW=X\tRt2_addr=X\treg_list=X\t";

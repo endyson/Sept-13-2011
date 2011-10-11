@@ -102,7 +102,7 @@ foreach $sim_line (<STAGE_2_OUTPUT_SIM>){
     #Only if emu Rn address is X that mismatch is allowed
     #Otherwise, an mismatch error occur!
     #############################################################
-    if($sim_hash{"Rn_addr"} != $emu_hash{"Rn_addr"} && $emu_hash{"Rn_addr"} ne 'X'){
+    if($sim_hash{"Rn_addr"} ne $emu_hash{"Rn_addr"} && $emu_hash{"Rn_addr"} ne 'X'){
         if($err_num<MAX_ERR){
             printf STDERR ("CHECK FAILED:$sim_line line:$loop_cnt_sim\n");
             printf STDERR ("EMU:$emu_line line:$loop_cnt_emu\n");
@@ -212,6 +212,7 @@ sub hex2dec{
         elsif    ( $hex eq 'd' || $hex eq 'D' ){$digit = 13; $sum += $digit * $w;}
         elsif    ( $hex eq 'e' || $hex eq 'E' ){$digit = 14; $sum += $digit * $w;}
         elsif    ( $hex eq 'f' || $hex eq 'F' ){$digit = 15; $sum += $digit * $w;}
+        elsif    ( $hex eq 'x' || $hex eq 'X' ){$sum = 'X'; last;}
         elsif    ( $hex eq '0'){$digit = 0; $sum += $digit * $w;}
         elsif    ( $hex eq '1'){$digit = 1; $sum += $digit * $w;}
         elsif    ( $hex eq '2'){$digit = 2; $sum += $digit * $w;}
