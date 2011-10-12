@@ -86,11 +86,11 @@ wire [4:0]s_offset;
 wire [31:0]imm32;
 wire rf_w_en;
 wire [31:0] rn_data, rm_data, rd_data;
-wire [31:0] shifted_rn_data;
+wire [31:0] shifted_data;
 wire [31:0] valid_rn_data;
 wire [31:0] oprand1,oprand2;
 wire [11:0] imm12;
-wire [31:0] thumb_imm32;
+wire [31:0] thumb_expand_imm32;
 wire [31:0] zero_expand_imm32;
 wire [31:0] inst_stage_2;
 wire index,add,wback;
@@ -99,14 +99,14 @@ reg_32          u_stage_2_reg_32(inst,clk,inst_stage_2);
 
 inst_pattern_match  u_inst_pattern_match(inst_stage_2, cur_carry, rd_addr,rd2_addr, rn_addr, rm_addr, imm_or_reg, shift_or_not,thumb_or_not, zero_expand_imm32,imm12, s_type, s_offset,index,add,wback,reg_mask);
 reg_file            u_reg_file(rn_addr, rm_addr, rd_addr, rf_w_en, clk, rn_data, rm_data, rd_data);
-shift               u_shift(s_type, s_offset, rn_data, cur_carry, shifted_rn_data, next_carry);
-thumb_expand_imm    u_thumb_expand_imm(imm12, cur_carry, thumb_imm32, next_carry);
+shift               u_shift(s_type, s_offset, rm_data, cur_carry, shifted_data, next_carry);
+thumb_expand_imm    u_thumb_expand_imm(imm12, cur_carry, thumb_expand_imm32, next_carry);
 
 //Carry set Signals should ALL put it HERE!
 assign set_xpsr[29] = next_carry;
 
-assign valid_rn_data   = shift_or_not ? shifted_rn_data: rn_data;
-assign imm32           = thumb_or_not ? thumb_imm32 : zero_expand_imm32;
-assign oprand2         = imm_or_reg   ? imm32: valid_rn_data;
-assign oprand1         = rm_data;
+assign rm_data_est      = shift_or_not ? shifted_data: rm_data;
+assign imm32            = thumb_or_not ? thumb_expand_imm32 : zero_expand_imm32;
+assign oprand2          = imm_or_reg   ? imm32: rm_data_est;
+assign oprand1          = rn_data;
 endmodule

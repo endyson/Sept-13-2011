@@ -66,9 +66,11 @@ my @inst_name_pattern_10 = (
     "LDRSH(imm) T2"
 );
 
-my @pattern_11 = (
-    0xe8500000,#LDRD(imm)
-    0xe85f0000,#LDRD(literal)
+my @pattern_11_0 = (
+    0xe8500000 #LDRD(imm)
+    #0xe85f0000,#LDRD(literal)
+);
+my @pattern_11_1 = (
     0xe8500f00,#LDREX
     0xe8d00f4f,#LDREXB
     0xe8d00f5f,#LDREXH
@@ -77,10 +79,11 @@ my @pattern_11 = (
     0xf9300e00,#LDRSHT
     0xf8500e00 #LDRT
 );
-
-my @inst_name_pattern_11 = (
-    "LDRD(imm)",
-    "LDRD(literal)",
+my @inst_name_pattern_11_0 = (
+    "LDRD(imm)"
+    #"LDRD(literal)",
+);
+my @inst_name_pattern_11_1 = (
     "LDREX",
     "LDREXB",
     "LDREXH",
@@ -88,9 +91,7 @@ my @inst_name_pattern_11 = (
     "LDRSBT",
     "LDRSHT",
     "LDRT"
-
 );
-
 my @pattern_3 = (
     0xeb400000, #ADC(reg) T2
     0xeb000000 #ADD(reg) T3
@@ -130,32 +131,38 @@ my @inst_name_pattern_13 = (
 
 );
 
-my @pattern_14 = (
+my @pattern_14_0 = (
     0xf8d00000,#LDR(imm) T3
-    0xf85f0000,#LDR(literal) T2
     0xf8900000,#LDRB(imm) T2
-    0xf81f0000,#LDRB(literal) T1
     0xf8b00000,#LDRH(imm) T2
-    0xf83f0000,#LDRH(literal)
     0xf9900000,#LDRSB(imm) T1
+    0xf9b00000 #LDRSH(imm) T1
+);
+
+my @inst_name_pattern_14_0 = (
+    "LDR(imm) T3",
+    "LDRB(imm) T2",
+    "LDRH(imm) T2",
+    "LDRSB(imm) T1",
+    "LDRSH(imm) T1"
+);
+
+my @pattern_14_1 = (
+    0xf85f0000,#LDR(literal) T2
+    0xf81f0000,#LDRB(literal) T1
+    0xf83f0000,#LDRH(literal)
     0xf91f0000,#LDRSB(literal)
-    0xf9b00000,#LDRSH(imm) T1
     0xf93f0000 #LDRSH(literal)
 );
 
-my @inst_name_pattern_14 = (
-    "LDR(imm) T3",
+my @inst_name_pattern_14_1 = (
     "LDR(literal) T2",
-    "LDRB(imm) T2",
     "LDRB(literal) T1",
-    "LDRH(imm) T2",
     "LDRH(literal)",
-    "LDRSB(imm) T1",
     "LDRSB(literal)",
-    "LDRSH(imm) T1",
     "LDRSH(literal)"
-
 );
+
 my @pattern_4 = (
     0x4140 #ADC(reg) T1
 
@@ -708,11 +715,11 @@ foreach (@pattern_10){
 }
 
 ###################################################################
-#T e s t    I n s t r u c t i o n   F o r   P a t t e r n   11
+#T e s t    I n s t r u c t i o n   F o r   P a t t e r n   11_0
 ###################################################################
 $index=0;
 
-foreach (@pattern_11){
+foreach (@pattern_11_0){
     $w = 0b0;
     $pu = 0b01;
     $rn = 0b10;
@@ -736,8 +743,8 @@ foreach (@pattern_11){
         printf( "EMU: Rn_addr=%x\tRm_addr=X\tRd_addr=%x\timm32=%x\tshift_or_not=0\tthumb_or_not=0\timm_or_reg=1\t",$rn,$rt,$imm8);
         printf "cur_inst=%x\t",$inst[$pc-1];
         printf("PUW=%x\tRt2_addr=%x\treg_list=X\t",$puw,$rt2);
-        printf "pc = %x\t",$pc-1;
-        print $inst_name_pattern_11[$index],"\n";
+        printf "pc=%x\t",$pc-1;
+        print $inst_name_pattern_11_0[$index],"\n";
 
         $loop_cnt++;
 
@@ -751,7 +758,39 @@ foreach (@pattern_11){
     }
     $index++;
 }
+###################################################################
+#T e s t    I n s t r u c t i o n   F o r   P a t t e r n   11_1
+###################################################################
+$index=0;
 
+foreach (@pattern_11_1){
+    $rn = 0b0;
+    $rt = 0b1;
+    $imm8 = 0b10;
+
+    $loop_cnt = 0;
+    while($loop_cnt < (1<<8)){
+        $p_Rn = $rn<<16;
+        $p_Rt = $rt<<12;
+        $p_imm8 = $imm8;
+
+        $inst[$pc++] = $_ | $p_Rn | $p_Rt| $p_imm8;
+
+        printf( "EMU: Rn_addr=%x\tRm_addr=X\tRd_addr=%x\timm32=%x\tshift_or_not=0\tthumb_or_not=0\timm_or_reg=1\t",$rn,$rt,$imm8);
+        printf "cur_inst=%x\t",$inst[$pc-1];
+        printf("PUW=X\tRt2_addr=X\treg_list=X\t");
+        printf "pc=%x\t",$pc-1;
+        print $inst_name_pattern_11_1[$index],"\n";
+
+        $loop_cnt++;
+
+        $rn = xbit_cnt($rn, 4);
+        $rt = xbit_cnt($rt, 4);
+        $imm8 = xbit_cnt($imm8,8);
+
+    }
+    $index++;
+}
 ###################################################################
 #T e s t    I n s t r u c t i o n   F o r   P a t t e r n   12
 ###################################################################
@@ -779,7 +818,7 @@ foreach (@pattern_12){
         printf "pc=%d\t",$pc-1;
         print $inst_name_pattern_12[$index],"\n";
         $s_offset = $imm2;
-        printf( "EMU: s_type=0\toffset=%x\n",$s_offset);
+        printf( "EMU: s_type=0\ts_offset=%x\n",$s_offset);
 
         $loop_cnt++;
 
@@ -830,12 +869,11 @@ foreach (@pattern_13){
 }
 
 ###################################################################
-#T e s t    I n s t r u c t i o n   F o r   P a t t e r n   14
+#T e s t    I n s t r u c t i o n   F o r   P a t t e r n   14_0
 ###################################################################
 $index=0;
 
-foreach (@pattern_14){
-    $u = 0b0;
+foreach (@pattern_14_0){
     $rt = 0b1;
     $rn = 0b10;
     $imm12= 0b11;
@@ -843,29 +881,59 @@ foreach (@pattern_14){
     $loop_cnt = 0;
     while($loop_cnt < (1<<12)){
         $p_Rn = $rn<<16;
-        $p_U = $u<<23;
         $p_Rt = $rt<<12;
         $p_imm12 = $imm12;
 
-        $inst[$pc++] = $_ | $p_Rn | $p_U| $p_Rt | $p_imm12;
+        $inst[$pc++] = $_ | $p_Rn | $p_Rt | $p_imm12;
         $imm32 = $imm12; 
         printf "EMU: Rn_addr=%x\tRm_addr=X\tRd_addr=%x\t",$rn,$rt;
         printf "shift_or_not=0\tthumb_or_not=0\timm_or_reg=1\t";
         printf "imm32=%x\tcur_inst=%x\t",$imm32,$inst[$pc-1];
-        printf "PUW=%x\tRt2_addr=X\treg_list=X\t", ($u<<1)|(1<<2);
+        printf "PUW=X\tRt2_addr=X\treg_list=X\t";
         printf "pc=%d\t",$pc-1;
-        print $inst_name_pattern_14[$index],"\n";
+        print $inst_name_pattern_14_0[$index],"\n";
 
         $loop_cnt++;
 
         $rn = xbit_cnt($rn, 4);
+        $rt = xbit_cnt($rt,4);
+        $imm12 = xbit_cnt($imm12,12);
+    }
+    $index++;
+}
+###################################################################
+#T e s t    I n s t r u c t i o n   F o r   P a t t e r n   14_1
+###################################################################
+$index=0;
+
+foreach (@pattern_14_1){
+    $u = 0b0;
+    $rt = 0b1;
+    $imm12= 0b11;
+
+    $loop_cnt = 0;
+    while($loop_cnt < (1<<12)){
+        $p_U = $u<<23;
+        $p_Rt = $rt<<12;
+        $p_imm12 = $imm12;
+
+        $inst[$pc++] = $_ | $p_U| $p_Rt | $p_imm12;
+        $imm32 = $imm12; 
+        printf "EMU: Rn_addr=f\tRm_addr=X\tRd_addr=%x\t",$rt;
+        printf "shift_or_not=0\tthumb_or_not=0\timm_or_reg=1\t";
+        printf "imm32=%x\tcur_inst=%x\t",$imm32,$inst[$pc-1];
+        printf "PUW=%x\tRt2_addr=X\treg_list=X\t", ($u<<1)|(1<<2);
+        printf "pc=%d\t",$pc-1;
+        print $inst_name_pattern_14_1[$index],"\n";
+
+        $loop_cnt++;
+
         $u = xbit_cnt($u, 1);
         $rt = xbit_cnt($rt,4);
         $imm12 = xbit_cnt($imm12,12);
     }
     $index++;
 }
-
 ###################################################################
 #T e s t    I n s t r u c t i o n   F o r   P a t t e r n   15
 ###################################################################

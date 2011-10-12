@@ -51,7 +51,7 @@ foreach $sim_line (<STAGE_2_OUTPUT_SIM>){
     chomp $emu_line;
 
     if(not defined $emu_line){
-        printf STDERR ("\$emu_line found uninitialized!\n");
+        printf STDERR  ("\$emu_line found uninitialized!\n");
         exit;
     } 
     @sim_signals = split '\s', $sim_line;
@@ -59,9 +59,9 @@ foreach $sim_line (<STAGE_2_OUTPUT_SIM>){
         if(/=/){ 
             @pair = split "=";
             if(not defined $pair[1]){
-                print "SIM:";
-            print $sim_line,"\n";
-            print $pair[0],"\t",$pair[1],"\n";
+                print STDERR "SIM:";
+            print STDERR $sim_line,"\n";
+            print STDERR $pair[0],"\t",$pair[1],"\n";
             exit;
             }
             $sim_hash{$pair[0]} = hex2dec($pair[1]);
@@ -74,8 +74,8 @@ foreach $sim_line (<STAGE_2_OUTPUT_SIM>){
         if(/=/){
             @pair = split "=";
              if(not defined $pair[1]){
-                 print "EMU:";
-            print $emu_line,"\n";
+                 print STDERR "EMU:";
+            print STDERR $emu_line,"\n";
             exit;
             }
             $emu_hash{$pair[0]} = hex2dec($pair[1]);
@@ -83,14 +83,14 @@ foreach $sim_line (<STAGE_2_OUTPUT_SIM>){
         }
     }
     if($emu_hash{"shift_or_not"} eq "1"){
-        $emu_line = <STAGE_2_OUTPUT_EMU>;
-        @emu_signals = split '\s', $emu_line;
+     my   $emu_line_sub = <STAGE_2_OUTPUT_EMU>;
+        @emu_signals = split '\s', $emu_line_sub;
         foreach(@emu_signals){
             if(/=/){
             @pair = split "=";
             if(not defined $pair[1]){
-                print "EMU SHIFT:";
-            print $emu_line,"\n";
+                printf STDERR  "EMU SHIFT:";
+            print STDERR $emu_line,"\n";
             exit;
             }
             $emu_hash{$pair[0]} = hex2dec($pair[1]);
@@ -165,7 +165,8 @@ foreach $sim_line (<STAGE_2_OUTPUT_SIM>){
     #the operand 2 from sim should equal to the imm32 from emu
     #Otherwise, a mismatch error occur!
     #############################################################
-    elsif($sim_hash{"imm_or_reg"} == 1  && $emu_hash{"imm_or_reg"} == 1 && $sim_hash{"op2"} !=  $emu_hash{"imm32"}){
+    elsif($sim_hash{"imm_or_reg"} == 1  && $emu_hash{"imm_or_reg"} == 1 && $sim_hash{"op2"} !=  $emu_hash{"imm32"} 
+    && !(($emu_line =~ /LDREXB/) || ($emu_line =~ /LDREXH/)) ){
         if($err_num<MAX_ERR){
             printf STDERR ("CHECK FAILED:$sim_line line:$loop_cnt_sim\n");
             printf STDERR ("EMU:$emu_line line:$loop_cnt_emu\n");
