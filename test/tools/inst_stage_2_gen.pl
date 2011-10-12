@@ -706,7 +706,7 @@ foreach (@pattern_10){
 
         $loop_cnt++;
 
-        $rn     = $rn <(1<<4)-1 ? $rn+1 : 0;
+        $rn     = $rn <(1<<4)-2 ? $rn+1 : 0;
         $rt     = $rt <(1<<4)-1 ? $rt+1 : 0;
         $puw     = $puw <(1<<3)-1 ? $puw+1 : 0;
         $imm8     = $imm8 <(1<<8)-1 ? $imm8+1 : 0;
@@ -784,7 +784,7 @@ foreach (@pattern_11_1){
 
         $loop_cnt++;
 
-        $rn = xbit_cnt($rn, 4);
+        $rn = xbit_cnt_m($rn, 4,1);
         $rt = xbit_cnt($rt, 4);
         $imm8 = xbit_cnt($imm8,8);
 
@@ -822,7 +822,7 @@ foreach (@pattern_12){
 
         $loop_cnt++;
 
-        $rn = xbit_cnt($rn, 4);
+        $rn = xbit_cnt_m($rn, 4, 1);
         $rt = xbit_cnt($rt, 4);
         $rm = xbit_cnt($rm,4);
         $imm2 = xbit_cnt($imm2,2);
@@ -1009,7 +1009,12 @@ sub xbit_cnt {
     my $bit_len = $_[1];
     $cur_cnt < (1<<$bit_len)-1 ? $cur_cnt+1: 0b0;
 }
-
+sub xbit_cnt_m {
+    my $cur_cnt = $_[0];
+    my $bit_len = $_[1];
+    my $minus = $_[2];
+    $cur_cnt < (1<<$bit_len)-1 - $minus ? $cur_cnt+1: 0b0;
+}
 sub flprint{
     my    $digit=$_[0];
     my    $base=$_[1];
