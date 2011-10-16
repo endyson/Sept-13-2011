@@ -88,8 +88,8 @@ initial begin
     $readmemh("./inst.dat",inst_mem);
 
     //Logging TARGET signals 
-    fd_stage_one  =   $fopen("./stage_1_output_sim.log","w");
-    fd_stage_two  =   $fopen("./stage_2_output_sim.log","w");
+    fd_stage_one  =   $fopen("./stage_1_output_sim.vec","w");
+    fd_stage_two  =   $fopen("./stage_2_output_sim.vec","w");
 
     //Dump waveform
     $fsdbDumpfile("./arm_core.fsdb");

@@ -126,7 +126,7 @@ my @pattern_13 = (
 );
 
 my @inst_name_pattern_13 = (
-    "LDM/LDMIA/LDMFD",
+    "LDM/LDMIA/LDMFD T2",
     "LDMDB/LDMEA"
 
 );
@@ -945,8 +945,8 @@ foreach (@pattern_15){
 
     $loop_cnt = 0;
     while($loop_cnt < (1<<8)){
-        $p_Rn = $rn<<24;
-        $p_reg_list = $reg_list<<16;
+        $p_Rn = $rn<<8;
+        $p_reg_list = $reg_list;
 
         $inst[$pc++] = $_ | $p_Rn | $p_reg_list;
 
@@ -977,9 +977,9 @@ foreach (@pattern_16){
 
     $loop_cnt = 0;
     while($loop_cnt < (1<<5)){
-        $p_Rn = $rn<<19;
-        $p_Rt = $rt<<16;
-        $p_imm5 = $imm5<<22;
+        $p_Rn = $rn<<3;
+        $p_Rt = $rt;
+        $p_imm5 = $imm5<<6;
 
         $inst[$pc++] = $_ | $p_Rn | $p_imm5 | $p_Rt;
         $imm32 = $imm5;
